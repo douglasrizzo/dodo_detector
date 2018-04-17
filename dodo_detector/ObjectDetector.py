@@ -23,22 +23,28 @@ class ObjectDetector(metaclass=ABCMeta):
 
             ret, frame = get_frame(stream)
 
+        cv2.destroyAllWindows()
+
     def from_camera(self, camera_id=0):
-        stream = WebcamVideoStream(src=camera_id).start()
 
         def get_frame(stream):
             frame = stream.read()
             ret = True
             return ret, frame
 
+        stream = WebcamVideoStream(src=camera_id)
+
+        stream.start()
         self._detect_from_stream(get_frame, stream)
+        stream.stop()
 
     def from_video(self, filepath):
-        stream = cv2.VideoCapture()
-        stream.open(filename=filepath)
 
         def get_frame(stream):
             ret, frame = stream.read()
             return ret, frame
+
+        stream = cv2.VideoCapture()
+        stream.open(filename=filepath)
 
         self._detect_from_stream(get_frame, stream)
