@@ -24,5 +24,5 @@ setup(
     author_email='douglasrizzom@gmail.com',
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
     install_requires=['numpy', 'tensorflow', 'tqdm', 'imutils'],
-    license='LGPLv3'
+    license='GPLv3'
 )
