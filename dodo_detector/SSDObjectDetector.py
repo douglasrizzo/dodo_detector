@@ -12,6 +12,7 @@ from dodo_detector.ObjectDetector import ObjectDetector
 
 
 class SSDObjectDetector(ObjectDetector):
+
     def __init__(self, path_to_frozen_graph, path_to_labels, num_classes):
         # load (frozen) tensorflow model into memory
         self.detection_graph = tf.Graph()
@@ -27,10 +28,8 @@ class SSDObjectDetector(ObjectDetector):
         # Here we use internal utility functions, but anything that returns a
         # dictionary mapping integers to appropriate string labels would be fine
         label_map = label_map_util.load_labelmap(path_to_labels)
-        self.categories = label_map_util.convert_label_map_to_categories(
-            label_map, max_num_classes=num_classes, use_display_name=True)
+        self.categories = label_map_util.convert_label_map_to_categories(label_map, max_num_classes=num_classes, use_display_name=True)
         self.category_index = label_map_util.create_category_index(self.categories)
-
 
     def from_image(self, frame):
         # object recognition begins here
@@ -41,24 +40,17 @@ class SSDObjectDetector(ObjectDetector):
                 # TensorFlow magic begins here #
                 ################################
                 image_np_expanded = np.expand_dims(frame, axis=0)
-                image_tensor = self.detection_graph.get_tensor_by_name(
-                    'image_tensor:0')
+                image_tensor = self.detection_graph.get_tensor_by_name('image_tensor:0')
                 # Each box represents a part of the image where a particular object was detected.
-                boxes = self.detection_graph.get_tensor_by_name(
-                    'detection_boxes:0')
+                boxes = self.detection_graph.get_tensor_by_name('detection_boxes:0')
                 # Each score represent how level of confidence for each of the objects.
                 # Score is shown on the result image, together with the class label.
-                scores = self.detection_graph.get_tensor_by_name(
-                    'detection_scores:0')
-                classes = self.detection_graph.get_tensor_by_name(
-                    'detection_classes:0')
-                num_detections = self.detection_graph.get_tensor_by_name(
-                    'num_detections:0')
+                scores = self.detection_graph.get_tensor_by_name('detection_scores:0')
+                classes = self.detection_graph.get_tensor_by_name('detection_classes:0')
+                num_detections = self.detection_graph.get_tensor_by_name('num_detections:0')
 
                 # Actual detection
-                (boxes, scores, classes, num_detections) = sess.run(
-                    [boxes, scores, classes, num_detections],
-                    feed_dict={image_tensor: image_np_expanded})
+                (boxes, scores, classes, num_detections) = sess.run([boxes, scores, classes, num_detections], feed_dict={image_tensor: image_np_expanded})
 
                 scr = scores.tolist()
                 box = boxes.tolist()
@@ -75,24 +67,19 @@ class SSDObjectDetector(ObjectDetector):
                         if y < 0.9:
                             break
 
-                        clas_name = self.categories[int(clas[x][scr[x].index(y)]) - 1][
-                            'name']  # nome do objeto dentro do dicionário de objetos
-                        box_objects = box[x][
-                            scr[x].index(y)
-                        ]  # dados das caixas gráficas dos objetos normalizadas entre 0 e 1 ( box_objects = [Ymin, Xmin, Ymax, Xmax] )
+                        clas_name = self.categories[int(clas[x][scr[x].index(y)]) - 1]['name']  # nome do objeto dentro do dicionário de objetos
+                        box_objects = box[x][scr[x].index(y)
+                                             ]  # dados das caixas gráficas dos objetos normalizadas entre 0 e 1 ( box_objects = [Ymin, Xmin, Ymax, Xmax] )
 
                         ymin = int(box_objects[0] * height)
                         xmin = int(box_objects[1] * width)
                         ymax = int(box_objects[2] * height)
                         xmax = int(box_objects[3] * width)
 
-
                         if clas_name not in detected_objects:
                             detected_objects[clas_name] = []
 
-                        detected_objects[clas_name].append((ymin,xmin,ymax,xmax))
-
-
+                        detected_objects[clas_name].append((ymin, xmin, ymax, xmax))
 
                 # Visualization of the results of a detection.
                 vis_util.visualize_boxes_and_labels_on_image_array(
@@ -102,7 +89,8 @@ class SSDObjectDetector(ObjectDetector):
                     np.squeeze(scores),
                     self.category_index,
                     use_normalized_coordinates=True,
-                    line_thickness=8)
+                    line_thickness=8
+                )
                 ################################
 
                 return frame, detected_objects

@@ -59,10 +59,7 @@ class KeypointObjectDetector(ObjectDetector):
 
         # store object classes in a list
         # each directory in the object database corresponds to a class
-        self.objects = [
-            os.path.basename(d) for d in os.listdir(self.database_path)
-            if d != 'IGNORE'
-        ]
+        self.objects = [os.path.basename(d) for d in os.listdir(self.database_path) if d != 'IGNORE']
 
         # minimum object dimensions in pixels
         self.min_object_height = 10
@@ -87,9 +84,8 @@ class KeypointObjectDetector(ObjectDetector):
         print('Analyzing image files in \'' + obj + '\'...')
 
         img_files = [
-            join(self.database_path + obj + '/', f)
-            for f in listdir(self.database_path + obj + '/')
-            if isfile(join(self.database_path + obj + '/', f))
+            join(self.database_path + object_name + '/', f) for f in listdir(self.database_path + object_name + '/')
+            if isfile(join(self.database_path + object_name + '/', f))
         ]
         print('Found ' + str(len(img_files)) + ' images...')
 
@@ -125,8 +121,7 @@ class KeypointObjectDetector(ObjectDetector):
         for img_counter, img_feature in enumerate(img_features):
             obj_img, kp, des = img_feature
 
-            if des is not None and len(
-                    des) > 0 and scene_des is not None and len(scene_des) > 0:
+            if des is not None and len(des) > 0 and scene_des is not None and len(scene_des) > 0:
                 matches = self.matcher.knnMatch(des, scene_des, k=2)
 
                 good = []
@@ -146,22 +141,17 @@ class KeypointObjectDetector(ObjectDetector):
                 # an object was detected
                 if len(good) > self.min_points:
                     self.object_counters[name] += 1
-                    src_pts = np.float32(
-                        [kp[m.queryIdx].pt for m in good]).reshape(-1, 1, 2)
-                    dst_pts = np.float32(
-                        [scene_kp[m.trainIdx].pt for m in good]).reshape(
-                            -1, 1, 2)
+                    src_pts = np.float32([kp[m.queryIdx].pt for m in good]).reshape(-1, 1, 2)
+                    dst_pts = np.float32([scene_kp[m.trainIdx].pt for m in good]).reshape(-1, 1, 2)
 
-                    M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC,
-                                                 5.0)
+                    M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)
 
                     if coordinates is None:
                         h, w, c = obj_img.shape
                     else:
                         _, _, w, h = coordinates
 
-                    pts = np.float32([[0, 0], [0, h - 1], [w - 1, h - 1],
-                                      [w - 1, 0]]).reshape(-1, 1, 2)
+                    pts = np.float32([[0, 0], [0, h - 1], [w - 1, h - 1], [w - 1, 0]]).reshape(-1, 1, 2)
                     dst = np.int32(cv2.perspectiveTransform(pts, M))
                     # dst contains the coordinates of the vertices of the drawn rectangle
 
@@ -208,9 +198,7 @@ class KeypointObjectDetector(ObjectDetector):
                 homography = homography.reshape((-1, 1, 2))
                 cv2.polylines(frame, [homography], True, (0, 255, 255), 10)
 
-                cv2.putText(frame, object_name + ': ' +
-                            str(self.object_counters[object_name]), text_point,
-                            cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.2, (0, 0, 0), 2)
+                cv2.putText(frame, object_name + ': ' + str(self.object_counters[object_name]), text_point, cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.2, (0, 0, 0), 2)
 
         return frame, detected_objects
 
