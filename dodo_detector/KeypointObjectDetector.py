@@ -53,16 +53,12 @@ class KeypointObjectDetector(ObjectDetector):
 
         # load features for each texture and store the image,
         # its keypoints and corresponding descriptor
-        self.object_features = [
-            self._load_features(obj) for obj in self.objects
-        ]
+        self.object_features = {}
 
-        cv2.namedWindow("Object Recognition", 1)
+        for obj in self.objects:
+            self.object_features[obj] = self._load_features(obj)
 
-    def _load_features(self, obj, return_image=True):
-        # Initialize detector
-        print('Analyzing image files in \'' + obj + '\'...')
-
+    def _load_features(self, object_name):
         img_files = [
             join(self.database_path + object_name + '/', f) for f in listdir(self.database_path + object_name + '/')
             if isfile(join(self.database_path + object_name + '/', f))
@@ -83,16 +79,11 @@ class KeypointObjectDetector(ObjectDetector):
             # find keypoints and descriptors with the selected feature detector
             kp, des = self.detector.detectAndCompute(img, None)
 
-            print('    Extracted ' + str(len(kp)) + ' keypoints!')
-            if return_image:
-                features.append([img, kp, des])
-            else:
-                features.append([kp, des])
+            features.append((img, kp, des))
 
-        return obj, features
+        return features
 
-    def _detect_object(self, obj_features, scene, coordinates=None):
-        name, img_features = obj_features
+    def _detect_object(self, name, img_features, scene, coordinates=None):
         scene_img, scene_kp, scene_des = scene
 
         for img_feature in img_features:
@@ -149,8 +140,8 @@ class KeypointObjectDetector(ObjectDetector):
         detected_objects = {}
 
         for obj_features in self.object_features:
-            homography, rct = self._detect_object(obj_features,
-                                                  [frame, scene_kp, scene_des])
+            features = self.object_features[obj_features]
+            homography, rct = self._detect_object(obj_features, features, [frame, scene_kp, scene_des])
 
             if rct is not None:
                 ymin = rct[1]
