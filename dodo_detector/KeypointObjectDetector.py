@@ -6,30 +6,15 @@ from os.path import isfile, join
 
 import cv2
 import numpy as np
-from imutils.video import WebcamVideoStream
+from tqdm import tqdm
+
 from dodo_detector.ObjectDetector import ObjectDetector
-from pprint import PrettyPrinter
+
 
 class KeypointObjectDetector(ObjectDetector):
-    def __init__(
-            self,
-            database_path,
-            detector_type='SIFT',
-            log_dir='/tmp',
-    ):
-        self.first_frame = None
+
+    def __init__(self, database_path, detector_type='SIFT', matcher_type='BF'):
         self.current_frame = 0
-
-        self.log_dir = log_dir
-
-        # how many frames to ignore during object detection
-        self.frame_skip = 5
-
-        # how many frames an object must appear in order to be considered present in the scene
-        self.min_frames = 5
-
-        # how many frames the object detection node will analyze before giving its judgement
-        self.max_frames = 20
 
         # get the directory where object textures are stored
         self.database_path = database_path
@@ -43,19 +28,14 @@ class KeypointObjectDetector(ObjectDetector):
         elif detector_type == 'SURF':
             self.detector = cv2.xfeatures2d.SURF_create()
 
-        # get which OpenCV feature matcher the user wants from the configuration files
-        self.matcher_type = 'BF'
-        if self.matcher_type == 'BF':
+        # get which OpenCV feature matcher the user wants
+        if matcher_type == 'BF':
             self.matcher = cv2.BFMatcher()
-        elif self.matcher_type == 'FLANN':
+        elif matcher_type == 'FLANN':
             flann_index_kdtree = 0
             index_params = dict(algorithm=flann_index_kdtree, trees=5)
             search_params = dict(checks=50)  # or pass empty dictionary
             self.matcher = cv2.FlannBasedMatcher(index_params, search_params)
-
-        self.previous_detected_objects = []
-        self.consensus_counter = 0
-        self.min_consensus = 5
 
         # store object classes in a list
         # each directory in the object database corresponds to a class
@@ -87,13 +67,13 @@ class KeypointObjectDetector(ObjectDetector):
             join(self.database_path + object_name + '/', f) for f in listdir(self.database_path + object_name + '/')
             if isfile(join(self.database_path + object_name + '/', f))
         ]
-        print('Found ' + str(len(img_files)) + ' images...')
+
+        pbar = tqdm(desc=object_name, total=len(img_files))
 
         # extract the keypoints from all images in the database
         features = []
-        for counter, img_file in enumerate(img_files):
-            print('    Extracting keypoints and descriptors from image ' +
-                  str(counter) + ': ' + img_file)
+        for img_file in img_files:
+            pbar.update()
             img = cv2.imread(img_file)
 
             # scaling_factor = 640 / img.shape[0]
@@ -115,10 +95,7 @@ class KeypointObjectDetector(ObjectDetector):
         name, img_features = obj_features
         scene_img, scene_kp, scene_des = scene
 
-        # print('-' * 80)
-        # print('Searching for object \'' + name + '\'...')
-
-        for img_counter, img_feature in enumerate(img_features):
+        for img_feature in img_features:
             obj_img, kp, des = img_feature
 
             if des is not None and len(des) > 0 and scene_des is not None and len(scene_des) > 0:
@@ -130,13 +107,6 @@ class KeypointObjectDetector(ObjectDetector):
                         m, n = match
                         if m.distance < 0.7 * n.distance:
                             good.append(m)
-
-                # goodness_ratio = float(len(good)) / float(len(kp))
-
-                # print('Image ' + str(img_counter + 1) +
-                #       '    Keypoints: ' + str(len(kp)) +
-                #       '    Good matches: ' + str(len(good)) +
-                #       '    Ratio: ' + str(goodness_ratio))
 
                 # an object was detected
                 if len(good) > self.min_points:
