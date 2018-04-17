@@ -224,13 +224,3 @@ class KeypointObjectDetector(ObjectDetector):
         min_x = min(dst[x, 0][0] for x in range(4))
         max_x = max(dst[x, 0][0] for x in range(4))
         return min_x, min_y, max_x - min_x, max_y - min_y
-
-
-if __name__ == '__main__':
-    try:
-        KeypointObjectDetector(
-            '/home/dodo/Downloads/SIFT_PHOTOS/gray/').from_camera()
-    except KeyboardInterrupt:
-        print("Shutting down")
-
-    cv2.destroyAllWindows()

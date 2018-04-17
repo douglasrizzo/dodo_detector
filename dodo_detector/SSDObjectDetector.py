@@ -106,13 +106,3 @@ class SSDObjectDetector(ObjectDetector):
                 ################################
 
                 return frame, detected_objects
-
-
-if __name__ == '__main__':
-    try:
-        SSDObjectDetector(
-            '/run/media/dodo/Santinus/objects_dataset/training/output_inference_graph.pb',
-            '/run/media/dodo/Santinus/objects_dataset/data/object-detection.pbtxt',
-            13).from_camera()
-    except KeyboardInterrupt:
-        cv2.destroyAllWindows()
