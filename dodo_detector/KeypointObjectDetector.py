@@ -13,8 +13,9 @@ from dodo_detector.ObjectDetector import ObjectDetector
 
 class KeypointObjectDetector(ObjectDetector):
 
-    def __init__(self, database_path, detector_type='SIFT', matcher_type='BF'):
+    def __init__(self, database_path, detector_type='RootSIFT', matcher_type='BF'):
         self.current_frame = 0
+        self.detector_type = detector_type
 
         # get the directory where object textures are stored
         self.database_path = database_path
@@ -23,9 +24,9 @@ class KeypointObjectDetector(ObjectDetector):
         self.min_points = 200
 
         # create the detector
-        if detector_type == 'SIFT':
+        if self.detector_type in ['SIFT', 'RootSIFT']:
             self.detector = cv2.xfeatures2d.SIFT_create()
-        elif detector_type == 'SURF':
+        elif self.detector_type == 'SURF':
             self.detector = cv2.xfeatures2d.SURF_create()
 
         # get which OpenCV feature matcher the user wants
@@ -58,6 +59,16 @@ class KeypointObjectDetector(ObjectDetector):
         for obj in self.objects:
             self.object_features[obj] = self._load_features(obj)
 
+    @staticmethod
+    def _rootsift(kps, descs):
+        eps = 1e-7
+        # apply the Hellinger kernel by first L1-normalizing and taking the
+        # square-root
+        descs /= (descs.sum(axis=1, keepdims=True) + eps)
+        descs = np.sqrt(descs)
+
+        return kps, descs
+
     def _load_features(self, object_name):
         img_files = [
             join(self.database_path + object_name + '/', f) for f in listdir(self.database_path + object_name + '/')
@@ -77,9 +88,12 @@ class KeypointObjectDetector(ObjectDetector):
                 img = cv2.resize(img, (0, 0), fx=0.3, fy=0.3)
 
             # find keypoints and descriptors with the selected feature detector
-            kp, des = self.detector.detectAndCompute(img, None)
+            kps, descs = self.detector.detectAndCompute(img, None)
 
-            features.append((img, kp, des))
+            if self.detector_type == 'RootSIFT' and len(kps) > 0:
+                kps, descs = self._rootsift(kps, descs)
+
+            features.append((img, kps, descs))
 
         return features
 
@@ -136,6 +150,9 @@ class KeypointObjectDetector(ObjectDetector):
         # Our operations on the frame come here
 
         scene_kp, scene_des = self.detector.detectAndCompute(frame, None)
+
+        if self.detector_type == 'RootSIFT' and len(scene_kp) > 0:
+            scene_kp, scene_des = self._rootsift(scene_kp, scene_des)
 
         detected_objects = {}
 
