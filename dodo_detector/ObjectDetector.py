@@ -9,9 +9,21 @@ class ObjectDetector(metaclass=ABCMeta):
 
     @abstractmethod
     def from_image(self, frame):
+        """
+        Detects objects in an image
+        :param frame: a numpy.ndarray containing the image where objects will be detected
+        :return: a tuple containing the image, with objects marked by rectangles,
+        and a dictionary listing objects and their locations as `(ymin, xmin, ymax, xmax)`
+        """
         pass
 
     def _detect_from_stream(self, get_frame, stream):
+        """
+        This internal method detects objects from images retrieved from a stream, given a method that extracts frames from this stream
+        :param get_frame: a method that extracts frames from the stream
+        :param stream: an object representing a stream of images
+        :return:
+        """
         ret, frame = get_frame(stream)
 
         while ret:
@@ -26,6 +38,10 @@ class ObjectDetector(metaclass=ABCMeta):
         cv2.destroyAllWindows()
 
     def from_camera(self, camera_id=0):
+        """
+        Detects objects in frames from a camera feed
+        :param camera_id: the ID of the camera in the system
+        """
 
         def get_frame(stream):
             frame = stream.read()
@@ -39,7 +55,10 @@ class ObjectDetector(metaclass=ABCMeta):
         stream.stop()
 
     def from_video(self, filepath):
-
+        """
+        Detects objects in frames from a video file
+        :param filepath: the path to the video file
+        """
         def get_frame(stream):
             ret, frame = stream.read()
             return ret, frame

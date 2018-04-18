@@ -11,6 +11,13 @@ from dodo_detector.ObjectDetector import ObjectDetector
 class SSDObjectDetector(ObjectDetector):
 
     def __init__(self, path_to_frozen_graph, path_to_labels, num_classes):
+        """
+        Object detector powered by the TensorFlow Object Detection API.
+
+        :param path_to_frozen_graph: path to the frozen inference graph file, a file with a `.pb` extension
+        :param path_to_labels: path to the label map, a text file with the `.pbtxt` extension
+        :param num_classes: number of object classes that will be detected
+        """
         # load (frozen) tensorflow model into memory
         self.detection_graph = tf.Graph()
         with self.detection_graph.as_default():
@@ -57,7 +64,7 @@ class SSDObjectDetector(ObjectDetector):
 
                 # for each detected object
                 for x in range(len(scr)):
-                    # for each score the objecthas received for each class
+                    # for each score the object has received for each class
                     for y in scr[x]:
                         # scores are given in descending order,
                         # so as soon as we find a low one, we stop looking

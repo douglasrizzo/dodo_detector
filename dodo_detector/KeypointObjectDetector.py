@@ -13,7 +13,16 @@ from dodo_detector.ObjectDetector import ObjectDetector
 
 class KeypointObjectDetector(ObjectDetector):
 
-    def __init__(self, database_path, detector_type='RootSIFT', matcher_type='BF'):
+    def __init__(self, database_path, detector_type='RootSIFT', matcher_type='BF', min_points=10):
+        """
+        Object detector based on keypoints. This class depends on OpenCV SIFT and SURF feature detection algorithms,
+        as well as the brute-force and FLANN-based feature matchers.
+
+        :param database_path: Path to the top-level directory containing subdirectories, each subdirectory named after a class of objects and containing images of that object.
+        :param detector_type: either `SURF`, `SIFT` or `RootSIFT`
+        :param matcher_type: either `BF` for brute-force matcher or `FLANN` for flann-based matcher
+        :param min_points: minimum number of keypoints necessary for an object to be considered detected in an image
+        """
         self.current_frame = 0
         self.detector_type = detector_type
 
@@ -21,7 +30,7 @@ class KeypointObjectDetector(ObjectDetector):
         self.database_path = database_path
 
         # minimum number of features for a KNN match to consider that an object has been found
-        self.min_points = 200
+        self.min_points = min_points
 
         # create the detector
         if self.detector_type in ['SIFT', 'RootSIFT']:
@@ -70,6 +79,11 @@ class KeypointObjectDetector(ObjectDetector):
         return kps, descs
 
     def _load_features(self, object_name):
+        """
+        Given the name of an object class from the image database directory, this method iterates through all the images contained in that directory and extracts their keypoints and descriptors using the desired feature detector
+        :param object_name: the name of an object class, whose image directory is contained inside the image database directory
+        :return: a list of tuples, each tuple containing the processed image as a grayscale numpy.ndarray, its keypoints and desciptors
+        """
         img_files = [
             join(self.database_path + object_name + '/', f) for f in listdir(self.database_path + object_name + '/')
             if isfile(join(self.database_path + object_name + '/', f))
