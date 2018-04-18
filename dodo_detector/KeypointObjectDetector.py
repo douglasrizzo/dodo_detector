@@ -68,16 +68,6 @@ class KeypointObjectDetector(ObjectDetector):
         for obj in self.objects:
             self.object_features[obj] = self._load_features(obj)
 
-    @staticmethod
-    def _rootsift(kps, descs):
-        eps = 1e-7
-        # apply the Hellinger kernel by first L1-normalizing and taking the
-        # square-root
-        descs /= (descs.sum(axis=1, keepdims=True) + eps)
-        descs = np.sqrt(descs)
-
-        return kps, descs
-
     def _load_features(self, object_name):
         """
         Given the name of an object class from the image database directory, this method iterates through all the images contained in that directory and extracts their keypoints and descriptors using the desired feature detector
@@ -102,24 +92,22 @@ class KeypointObjectDetector(ObjectDetector):
                 img = cv2.resize(img, (0, 0), fx=0.3, fy=0.3)
 
             # find keypoints and descriptors with the selected feature detector
-            kps, descs = self.detector.detectAndCompute(img, None)
+            keypoints, descriptors = self._detectAndCompute(img)
 
-            if self.detector_type == 'RootSIFT' and len(kps) > 0:
-                kps, descs = self._rootsift(kps, descs)
-
-            features.append((img, kps, descs))
+            features.append((img, keypoints, descriptors))
 
         return features
 
     def _detect_object(self, name, img_features, scene, coordinates=None):
-        scene_img, scene_kp, scene_des = scene
+        scene_kp, scene_descs = self._detectAndCompute(scene)
 
         for img_feature in img_features:
-            obj_img, kp, des = img_feature
+            obj_img, obj_kps, obj_descs = img_feature
 
-            if des is not None and len(des) > 0 and scene_des is not None and len(scene_des) > 0:
-                matches = self.matcher.knnMatch(des, scene_des, k=2)
+            if obj_descs is not None and len(obj_descs) > 0 and scene_descs is not None and len(scene_descs) > 0:
+                matches = self.matcher.knnMatch(obj_descs, scene_descs, k=2)
 
+                # store all the good matches as per Lowe's ratio test
                 good = []
                 for match in matches:
                     if len(match) == 2:
@@ -130,7 +118,7 @@ class KeypointObjectDetector(ObjectDetector):
                 # an object was detected
                 if len(good) > self.min_points:
                     self.object_counters[name] += 1
-                    src_pts = np.float32([kp[m.queryIdx].pt for m in good]).reshape(-1, 1, 2)
+                    src_pts = np.float32([obj_kps[m.queryIdx].pt for m in good]).reshape(-1, 1, 2)
                     dst_pts = np.float32([scene_kp[m.trainIdx].pt for m in good]).reshape(-1, 1, 2)
 
                     M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)
@@ -159,27 +147,39 @@ class KeypointObjectDetector(ObjectDetector):
 
         return None, None
 
+    def _detectAndCompute(self, image):
+        """
+        Detects keypoints and generates descriptors according to the desired algorithm
+        :param image: a numpy.ndarray containing the image whose keypoints and descriptors will be processed
+        :return: a tuple containing keypoints and descriptors
+        """
+        keypoints, descriptors = self.detector.detectAndCompute(image, None)
+        if self.detector_type == 'RootSIFT' and len(keypoints) > 0:
+                # Transforms SIFT descriptors into RootSIFT descriptors
+                # apply the Hellinger kernel by first L1-normalizing
+                # and taking the square-root
+                eps = 1e-7
+                descriptors /= (descriptors.sum(axis=1, keepdims=True) + eps)
+                descriptors = np.sqrt(descriptors)
+
+        return keypoints, descriptors
+
     def from_image(self, frame):
         self.current_frame += 1
         # Our operations on the frame come here
 
-        scene_kp, scene_des = self.detector.detectAndCompute(frame, None)
-
-        if self.detector_type == 'RootSIFT' and len(scene_kp) > 0:
-            scene_kp, scene_des = self._rootsift(scene_kp, scene_des)
-
         detected_objects = {}
 
-        for obj_features in self.object_features:
-            features = self.object_features[obj_features]
-            homography, rct = self._detect_object(obj_features, features, [frame, scene_kp, scene_des])
+        for object_name in self.object_features:
+            homography, rct = self._detect_object(object_name,
+                                                  self.object_features[object_name],
+                                                  frame)
 
             if rct is not None:
                 ymin = rct[1]
                 xmin = rct[0]
                 ymax = rct[1] + rct[3]
                 xmax = rct[0] + rct[2]
-                object_name = obj_features[0]
 
                 if object_name not in detected_objects:
                     detected_objects[object_name] = []
@@ -190,7 +190,8 @@ class KeypointObjectDetector(ObjectDetector):
                 homography = homography.reshape((-1, 1, 2))
                 cv2.polylines(frame, [homography], True, (0, 255, 255), 10)
 
-                cv2.putText(frame, object_name + ': ' + str(self.object_counters[object_name]), text_point, cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.2, (0, 0, 0), 2)
+                cv2.putText(frame, object_name + ': ' + str(self.object_counters[object_name]),
+                            text_point, cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.2, (0, 0, 0), 2)
 
         return frame, detected_objects
 
