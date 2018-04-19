@@ -10,14 +10,19 @@ from dodo_detector.ObjectDetector import ObjectDetector
 
 class SSDObjectDetector(ObjectDetector):
 
-    def __init__(self, path_to_frozen_graph, path_to_labels, num_classes):
+    def __init__(self, path_to_frozen_graph, path_to_labels, num_classes, confidence=.8):
         """
         Object detector powered by the TensorFlow Object Detection API.
 
         :param path_to_frozen_graph: path to the frozen inference graph file, a file with a `.pb` extension
         :param path_to_labels: path to the label map, a text file with the `.pbtxt` extension
         :param num_classes: number of object classes that will be detected
+        :param confidence: a value between 0 and 1 representing the confidence level the network has in the detection to consider it an actual detection
         """
+
+        if not 0 < confidence <= 1:
+            raise ValueError("confidence must be between 0 and 1")
+
         # load (frozen) tensorflow model into memory
         self.detection_graph = tf.Graph()
         with self.detection_graph.as_default():
@@ -34,6 +39,7 @@ class SSDObjectDetector(ObjectDetector):
         label_map = label_map_util.load_labelmap(path_to_labels)
         self.categories = label_map_util.convert_label_map_to_categories(label_map, max_num_classes=num_classes, use_display_name=True)
         self.category_index = label_map_util.create_category_index(self.categories)
+        self.confidence = confidence
 
     def from_image(self, frame):
         # object recognition begins here
