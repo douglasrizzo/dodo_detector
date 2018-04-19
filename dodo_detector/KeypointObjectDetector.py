@@ -71,6 +71,7 @@ class KeypointObjectDetector(ObjectDetector):
     def _load_features(self, object_name):
         """
         Given the name of an object class from the image database directory, this method iterates through all the images contained in that directory and extracts their keypoints and descriptors using the desired feature detector
+
         :param object_name: the name of an object class, whose image directory is contained inside the image database directory
         :return: a list of tuples, each tuple containing the processed image as a grayscale numpy.ndarray, its keypoints and desciptors
         """
@@ -98,7 +99,14 @@ class KeypointObjectDetector(ObjectDetector):
 
         return features
 
-    def _detect_object(self, name, img_features, scene, coordinates=None):
+    def _detect_object(self, name, img_features, scene):
+        """
+
+        :param name: name of the object class
+        :param img_features: a list of tuples, each tuple containing three elements: an image, its keypoints and its descriptors.
+        :param scene: the image where the object `name` will be detected
+        :return: a tuple containing two elements: the homography matrix and the coordinates of a rectangle containing the object in a list `[xmin, ymin, xmax, ymax]`
+        """
         scene_kp, scene_descs = self._detectAndCompute(scene)
 
         for img_feature in img_features:
@@ -150,17 +158,18 @@ class KeypointObjectDetector(ObjectDetector):
     def _detectAndCompute(self, image):
         """
         Detects keypoints and generates descriptors according to the desired algorithm
+        
         :param image: a numpy.ndarray containing the image whose keypoints and descriptors will be processed
         :return: a tuple containing keypoints and descriptors
         """
         keypoints, descriptors = self.detector.detectAndCompute(image, None)
         if self.detector_type == 'RootSIFT' and len(keypoints) > 0:
-                # Transforms SIFT descriptors into RootSIFT descriptors
-                # apply the Hellinger kernel by first L1-normalizing
-                # and taking the square-root
-                eps = 1e-7
-                descriptors /= (descriptors.sum(axis=1, keepdims=True) + eps)
-                descriptors = np.sqrt(descriptors)
+            # Transforms SIFT descriptors into RootSIFT descriptors
+            # apply the Hellinger kernel by first L1-normalizing
+            # and taking the square-root
+            eps = 1e-7
+            descriptors /= (descriptors.sum(axis=1, keepdims=True) + eps)
+            descriptors = np.sqrt(descriptors)
 
         return keypoints, descriptors
 
@@ -188,7 +197,6 @@ class KeypointObjectDetector(ObjectDetector):
                 homography = homography.reshape((-1, 1, 2))
                 cv2.polylines(frame, [homography], True, (0, 255, 255), 10)
 
-                cv2.putText(frame, object_name + ': ' + str(self.object_counters[object_name]),
-                            text_point, cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.2, (0, 0, 0), 2)
+                cv2.putText(frame, object_name + ': ' + str(self.object_counters[object_name]), text_point, cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.2, (0, 0, 0), 2)
 
         return frame, detected_objects
