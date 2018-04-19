@@ -62,34 +62,29 @@ class SSDObjectDetector(ObjectDetector):
                 # Actual detection
                 (boxes, scores, classes, num_detections) = sess.run([boxes, scores, classes, num_detections], feed_dict={image_tensor: image_np_expanded})
 
-                scr = scores.tolist()
-                box = boxes.tolist()
-                clas = classes.tolist()
-
                 detected_objects = {}
 
                 # for each detected object
-                for x in range(len(scr)):
-                    # for each score the object has received for each class
-                    for y in scr[x]:
-                        # scores are given in descending order,
-                        # so as soon as we find a low one, we stop looking
-                        if y < 0.9:
-                            break
+                for x in range(scores.shape[0]):
+                    score = scores[x, 0]
+                    # scores are given in descending order,
+                    # so as soon as we find a low one, we stop looking
+                    if score < self.confidence:
+                        break
 
-                        clas_name = self.categories[int(clas[x][scr[x].index(y)]) - 1]['name']  # nome do objeto dentro do dicionário de objetos
-                        box_objects = box[x][scr[x].index(y)
-                                             ]  # dados das caixas gráficas dos objetos normalizadas entre 0 e 1 ( box_objects = [Ymin, Xmin, Ymax, Xmax] )
+                    clas_name = self.categories[int(classes[x][0]) - 1]['name']  # nome do objeto dentro do dicionário de objetos
 
-                        ymin = int(box_objects[0] * height)
-                        xmin = int(box_objects[1] * width)
-                        ymax = int(box_objects[2] * height)
-                        xmax = int(box_objects[3] * width)
+                    # dados das caixas gráficas dos objetos normalizadas entre 0 e 1 ( box_objects = [Ymin, Xmin, Ymax, Xmax] )
+                    box_objects = boxes[x][0]
+                    ymin = int(box_objects[0] * height)
+                    xmin = int(box_objects[1] * width)
+                    ymax = int(box_objects[2] * height)
+                    xmax = int(box_objects[3] * width)
 
-                        if clas_name not in detected_objects:
-                            detected_objects[clas_name] = []
+                    if clas_name not in detected_objects:
+                        detected_objects[clas_name] = []
 
-                        detected_objects[clas_name].append((ymin, xmin, ymax, xmax))
+                    detected_objects[clas_name].append((ymin, xmin, ymax, xmax))
 
                 # Visualization of the results of a detection.
                 vis_util.visualize_boxes_and_labels_on_image_array(
