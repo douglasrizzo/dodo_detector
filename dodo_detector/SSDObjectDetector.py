@@ -46,9 +46,6 @@ class SSDObjectDetector(ObjectDetector):
         height, width, z = frame.shape
         with self.detection_graph.as_default():
             with tf.Session(graph=self.detection_graph) as sess:
-                ################################
-                # TensorFlow magic begins here #
-                ################################
                 image_np_expanded = np.expand_dims(frame, axis=0)
                 image_tensor = self.detection_graph.get_tensor_by_name('image_tensor:0')
                 # Each box represents a part of the image where a particular object was detected.
@@ -64,27 +61,29 @@ class SSDObjectDetector(ObjectDetector):
 
                 detected_objects = {}
 
-                # for each detected object
+                # for each detection
                 for x in range(scores.shape[0]):
-                    score = scores[x, 0]
                     # scores are given in descending order,
-                    # so as soon as we find a low one, we stop looking
-                    if score < self.confidence:
+                    # so we only check the first one to see if it's
+                    # higher than the minimum confidence
+                    if scores[x, 0] < self.confidence:
                         break
 
-                    clas_name = self.categories[int(classes[x][0]) - 1]['name']  # nome do objeto dentro do dicionário de objetos
+                    class_name = self.categories[int(classes[x][0]) - 1]['name']  # nome do objeto dentro do dicionário de objetos
 
-                    # dados das caixas gráficas dos objetos normalizadas entre 0 e 1 ( box_objects = [Ymin, Xmin, Ymax, Xmax] )
+                    # get the detection box around the object
                     box_objects = boxes[x][0]
+                    # positions of the box are between 0 and 1, relative to the size of the image
+                    # we multiply them to get the box location in pixels
                     ymin = int(box_objects[0] * height)
                     xmin = int(box_objects[1] * width)
                     ymax = int(box_objects[2] * height)
                     xmax = int(box_objects[3] * width)
 
-                    if clas_name not in detected_objects:
-                        detected_objects[clas_name] = []
+                    if class_name not in detected_objects:
+                        detected_objects[class_name] = []
 
-                    detected_objects[clas_name].append((ymin, xmin, ymax, xmax))
+                    detected_objects[class_name].append((ymin, xmin, ymax, xmax))
 
                 # Visualization of the results of a detection.
                 vis_util.visualize_boxes_and_labels_on_image_array(
