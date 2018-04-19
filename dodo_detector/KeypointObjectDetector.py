@@ -123,17 +123,17 @@ class KeypointObjectDetector(ObjectDetector):
 
                     M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)
 
-                    if coordinates is None:
-                        h, w, c = obj_img.shape
-                    else:
-                        _, _, w, h = coordinates
+                    h, w, c = obj_img.shape
 
                     pts = np.float32([[0, 0], [0, h - 1], [w - 1, h - 1], [w - 1, 0]]).reshape(-1, 1, 2)
                     dst = np.int32(cv2.perspectiveTransform(pts, M))
                     # dst contains the coordinates of the vertices of the drawn rectangle
 
                     # get the min and max x and y coordinates of the object
-                    x, y, w, h = self._extract_rectangle(dst)
+                    xmin = min(dst[x, 0][0] for x in range(4))
+                    xmax = max(dst[x, 0][0] for x in range(4))
+                    ymin = min(dst[x, 0][1] for x in range(4))
+                    ymax = max(dst[x, 0][1] for x in range(4))
 
                     # transform homography into a simpler data structure
                     dst = np.array([point[0] for point in dst], dtype=np.int32)
@@ -143,7 +143,7 @@ class KeypointObjectDetector(ObjectDetector):
                         break
 
                     # returns the homography and a rectangle containing o object
-                    return dst, [x, y, w, h]
+                    return dst, [xmin, ymin, xmax, ymax]
 
         return None, None
 
@@ -171,15 +171,13 @@ class KeypointObjectDetector(ObjectDetector):
         detected_objects = {}
 
         for object_name in self.object_features:
-            homography, rct = self._detect_object(object_name,
-                                                  self.object_features[object_name],
-                                                  frame)
+            homography, rct = self._detect_object(object_name, self.object_features[object_name], frame)
 
             if rct is not None:
-                ymin = rct[1]
                 xmin = rct[0]
-                ymax = rct[1] + rct[3]
-                xmax = rct[0] + rct[2]
+                ymin = rct[1]
+                xmax = rct[2]
+                ymax = rct[3]
 
                 if object_name not in detected_objects:
                     detected_objects[object_name] = []
@@ -194,14 +192,3 @@ class KeypointObjectDetector(ObjectDetector):
                             text_point, cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.2, (0, 0, 0), 2)
 
         return frame, detected_objects
-
-    @staticmethod
-    def _extract_rectangle(dst):
-        """
-        Extract a rectangle from an OpenCV homography
-        """
-        min_y = min(dst[x, 0][1] for x in range(4))
-        max_y = max(dst[x, 0][1] for x in range(4))
-        min_x = min(dst[x, 0][0] for x in range(4))
-        max_x = max(dst[x, 0][0] for x in range(4))
-        return min_x, min_y, max_x - min_x, max_y - min_y
