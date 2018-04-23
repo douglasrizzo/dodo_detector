@@ -29,6 +29,9 @@ class KeypointObjectDetector(ObjectDetector):
         # get the directory where object textures are stored
         self.database_path = database_path
 
+        if self.database_path[-1] != '/':
+            self.database_path += '/'
+
         # minimum number of features for a KNN match to consider that an object has been found
         self.min_points = min_points
 
