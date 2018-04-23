@@ -133,7 +133,12 @@ class KeypointObjectDetector(ObjectDetector):
                     destination_points = np.float32([scene_kp[m.trainIdx].pt for m in good]).reshape(-1, 1, 2)
 
                     M, mask = cv2.findHomography(source_points, destination_points, cv2.RANSAC, 5.0)
-                    h, w, c = obj_image.shape
+
+
+                    if (len(obj_image.shape) == 2):
+                        h, w = obj_image.shape
+                    else:
+                        h, w, _ = obj_image.shape
 
                     pts = np.float32([[0, 0], [0, h - 1], [w - 1, h - 1], [w - 1, 0]]).reshape(-1, 1, 2)
 
