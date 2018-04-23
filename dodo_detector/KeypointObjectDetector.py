@@ -52,7 +52,7 @@ class KeypointObjectDetector(ObjectDetector):
 
         # store object classes in a list
         # each directory in the object database corresponds to a class
-        self.objects = [os.path.basename(d) for d in os.listdir(self.database_path) if d != 'IGNORE']
+        self.objects = [os.path.basename(d) for d in os.listdir(self.database_path)]
 
         # minimum object dimensions in pixels
         self.min_object_height = 10
@@ -113,10 +113,10 @@ class KeypointObjectDetector(ObjectDetector):
         scene_kp, scene_descs = self._detectAndCompute(scene)
 
         for img_feature in img_features:
-            obj_img, obj_kps, obj_descs = img_feature
+            obj_image, obj_keypoints, obj_descriptors = img_feature
 
-            if obj_descs is not None and len(obj_descs) > 0 and scene_descs is not None and len(scene_descs) > 0:
-                matches = self.matcher.knnMatch(obj_descs, scene_descs, k=2)
+            if obj_descriptors is not None and len(obj_descriptors) > 0 and scene_descs is not None and len(scene_descs) > 0:
+                matches = self.matcher.knnMatch(obj_descriptors, scene_descs, k=2)
 
                 # store all the good matches as per Lowe's ratio test
                 good = []
@@ -129,16 +129,16 @@ class KeypointObjectDetector(ObjectDetector):
                 # an object was detected
                 if len(good) > self.min_points:
                     self.object_counters[name] += 1
-                    src_pts = np.float32([obj_kps[m.queryIdx].pt for m in good]).reshape(-1, 1, 2)
-                    dst_pts = np.float32([scene_kp[m.trainIdx].pt for m in good]).reshape(-1, 1, 2)
+                    source_points = np.float32([obj_keypoints[m.queryIdx].pt for m in good]).reshape(-1, 1, 2)
+                    destination_points = np.float32([scene_kp[m.trainIdx].pt for m in good]).reshape(-1, 1, 2)
 
-                    M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)
-
-                    h, w, c = obj_img.shape
+                    M, mask = cv2.findHomography(source_points, destination_points, cv2.RANSAC, 5.0)
+                    h, w, c = obj_image.shape
 
                     pts = np.float32([[0, 0], [0, h - 1], [w - 1, h - 1], [w - 1, 0]]).reshape(-1, 1, 2)
-                    dst = np.int32(cv2.perspectiveTransform(pts, M))
+
                     # dst contains the coordinates of the vertices of the drawn rectangle
+                    dst = np.int32(cv2.perspectiveTransform(pts, M))
 
                     # get the min and max x and y coordinates of the object
                     xmin = min(dst[x, 0][0] for x in range(4))
