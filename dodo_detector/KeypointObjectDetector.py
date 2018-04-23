@@ -134,6 +134,8 @@ class KeypointObjectDetector(ObjectDetector):
 
                     M, mask = cv2.findHomography(source_points, destination_points, cv2.RANSAC, 5.0)
 
+                    if M is None:
+                        break
 
                     if (len(obj_image.shape) == 2):
                         h, w = obj_image.shape
@@ -154,11 +156,7 @@ class KeypointObjectDetector(ObjectDetector):
                     # transform homography into a simpler data structure
                     dst = np.array([point[0] for point in dst], dtype=np.int32)
 
-                    # check the object's height, width and area according to the parameters in the config file
-                    if w < self.min_object_width or h < self.min_object_height or w * h < self.min_object_area:
-                        break
-
-                    # returns the homography and a rectangle containing o object
+                    # returns the homography and a rectangle containing the object
                     return dst, [xmin, ymin, xmax, ymax]
 
         return None, None
