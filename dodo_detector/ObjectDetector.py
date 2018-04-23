@@ -44,6 +44,7 @@ class ObjectDetector(metaclass=ABCMeta):
 
         :param camera_id: the ID of the camera in the system
         """
+
         def get_frame(stream):
             frame = stream.read()
             ret = True
@@ -61,6 +62,7 @@ class ObjectDetector(metaclass=ABCMeta):
         
         :param filepath: the path to the video file
         """
+
         def get_frame(stream):
             ret, frame = stream.read()
             return ret, frame
