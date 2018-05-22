@@ -10,14 +10,14 @@ from dodo_detector.ObjectDetector import ObjectDetector
 
 class SSDObjectDetector(ObjectDetector):
 
-    def __init__(self, path_to_frozen_graph, path_to_labels, num_classes, confidence=.8):
+    def __init__(self, path_to_frozen_graph, path_to_labels, num_classes=None, confidence=.8):
         """
         Object detector powered by the TensorFlow Object Detection API.
 
-        :param path_to_frozen_graph: path to the frozen inference graph file, a file with a `.pb` extension
-        :param path_to_labels: path to the label map, a text file with the `.pbtxt` extension
-        :param num_classes: number of object classes that will be detected
-        :param confidence: a value between 0 and 1 representing the confidence level the network has in the detection to consider it an actual detection
+        :param path_to_frozen_graph: path to the frozen inference graph file, a file with a `.pb` extension.
+        :param path_to_labels: path to the label map, a text file with the `.pbtxt` extension.
+        :param num_classes: number of object classes that will be detected. If None, it will be guessed by the contents of the label map.
+        :param confidence: a value between 0 and 1 representing the confidence level the network has in the detection to consider it an actual detection.
         """
 
         if not 0 < confidence <= 1:
@@ -37,6 +37,13 @@ class SSDObjectDetector(ObjectDetector):
         # Here we use internal utility functions, but anything that returns a
         # dictionary mapping integers to appropriate string labels would be fine
         label_map = label_map_util.load_labelmap(path_to_labels)
+
+        # this is a workaround to guess the number of classes by the contents of the label map
+        # it may not be perfect
+        if num_classes is None:
+            label_map_contents = open(label_map, 'r').read()
+            num_classes = label_map_contents.count('name:')
+
         self.categories = label_map_util.convert_label_map_to_categories(label_map, max_num_classes=num_classes, use_display_name=True)
         self.category_index = label_map_util.create_category_index(self.categories)
         self.confidence = confidence
