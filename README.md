@@ -1,6 +1,6 @@
 # Object detection
 
-This a Python package I made to make object detection easier. Besides de dependencies listed on `setup.py`, it also depends on the [OpenCV 3 nonfree/contrib packages](https://github.com/opencv/opencv_contrib), which include the SURF and SIFT keypoint detection algorithms, as well as the [TensorFlow Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection). The documentation over there teaches everything you need to know to install it.
+This a Python package I made to make object detection easier. Besides the dependencies listed on `setup.py`, it also depends on the [OpenCV 3 nonfree/contrib packages](https://github.com/opencv/opencv_contrib) (which include the SURF and SIFT keypoint detection algorithms) and the [TensorFlow Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection). The documentation on their repos teach everything you need to know in order to install it.
 
 Since this package is not on PyPi, you can install it via `pip` like this:
 
@@ -8,7 +8,7 @@ Since this package is not on PyPi, you can install it via `pip` like this:
 
 ## How to use
 
-The package has two types of detector, a keypoint-based detector and an SSD detector, which uses MobileNet v1.
+The package has two types of detector, a keypoint-based detector and a Single Shot Detector.
 
 ### Keypoint-based detector
 
@@ -42,9 +42,9 @@ Basically, the top-level directory will contain subdirectory. The name of each s
 
 You can then use the methods provided by the detector to detect objects in your images, videos or camera feed.
 
-### SSD detector
+### Single-shot detector
 
-This detector uses TensorFlow Object Detection API. Follow their tutorial on how to train your neural network. The resultant training procedure will give you the _frozen inference graph_, which is a `.pb` file; and a _label map_, which is a text file with extension `.pbtxt` containing the names of your object classes.
+This detector uses TensorFlow Object Detection API. Follow their tutorial on how to train your neural network. The training procedure will give you a _frozen inference graph_, which is a `.pb` file containing the network weights, as well as a _label map_, which is a text file with extension `.pbtxt` containing the names of your object classes.
 
 When creating the SSDObjectDetector, the path to the frozen inference graph and label map must be passed, as well as the number of classes.
 
