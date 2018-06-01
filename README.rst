@@ -1,5 +1,5 @@
-Object detection
-================
+Dodo's object detection package
+===============================
 
 This a Python package I made to make object detection easier. Besides de
 dependencies listed on ``setup.py``, it also depends on the `OpenCV 3
@@ -38,8 +38,8 @@ Example on running a keypoint-based detector:
 
 ::
 
-   from dodo_detector import KeypointObjectDetector
-   KeypointObjectDetector.KeypointObjectDetector('/path/to/my/database').from_camera(0)
+   from dodo_detector.detection import KeypointObjectDetector
+   KeypointObjectDetector('/path/to/my/database').from_camera(0)
 
 The database directory must have the following structure:
 
@@ -62,7 +62,7 @@ The database directory must have the following structure:
        .
        .
 
-Basically, the top-level directory will contain subdirectory. The name
+Basically, the top-level directory will contain subdirectories. The name
 of each subdirectory is the class name the program will return during
 detection. Inside each subdirectory is a collection of image files,
 whose keypoints will be extracted by the ``KeypointObjectDetector``
@@ -88,7 +88,7 @@ Example on running a single-shot detector:
 
 ::
 
-   from dodo_detector import SSDObjectDetector
-   SSDObjectDetector.SSDObjectDetector('path/to/frozen/graph.pb', 'path/to/labels.pbtxt', 5).from_camera(0)
+   from dodo_detector.detection import SSDObjectDetector
+   SSDObjectDetector('path/to/frozen/graph.pb', 'path/to/labels.pbtxt', 5).from_camera(0)
 
 Have fun!
