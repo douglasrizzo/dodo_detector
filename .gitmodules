@@ -1,0 +1,3 @@
+[submodule "tf_obj_tutorial"]
+	path = sphinx/tf_obj_tutorial
+	url = git@gist.github.com:c70e186678f126f1b9005ca83d8bd2ce.git
