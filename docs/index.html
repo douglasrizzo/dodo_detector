@@ -41,32 +41,18 @@
             
   <div class="section" id="dodo-s-object-detection-package">
 <h1>Dodo’s object detection package<a class="headerlink" href="#dodo-s-object-detection-package" title="Permalink to this headline">¶</a></h1>
-<p>This a Python package I made to make object detection easier. Besides de
-dependencies listed on <code class="docutils literal notranslate"><span class="pre">setup.py</span></code>, it also depends on the <a class="reference external" href="https://github.com/opencv/opencv_contrib">OpenCV 3
-nonfree/contrib packages</a>,
-which include the SURF and SIFT keypoint detection algorithms, as well
-as the <a class="reference external" href="https://github.com/tensorflow/models/tree/master/research/object_detection">TensorFlow Object Detection
-API</a>.
-The documentation over there teaches everything you need to know to
-install it.</p>
-<p>Since this package is not on PyPi, you can install it via <code class="docutils literal notranslate"><span class="pre">pip</span></code> like
-this:</p>
+<p>This a Python package I made to make object detection easier. Besides the dependencies listed on <code class="docutils literal notranslate"><span class="pre">setup.py</span></code>, it also depends on the <a class="reference external" href="https://github.com/opencv/opencv_contrib">OpenCV 3 nonfree/contrib packages</a>, which include the SURF <a class="footnote-reference" href="#id7" id="id1">[1]</a> and SIFT <a class="footnote-reference" href="#id8" id="id2">[2]</a> keypoint detection algorithms, as well as the <a class="reference external" href="https://github.com/tensorflow/models/tree/master/research/object_detection">TensorFlow Object Detection API</a>. The documentation over there teaches everything you need to know to install it.</p>
+<p>Since this package is not on PyPi, you can install it via <code class="docutils literal notranslate"><span class="pre">pip</span></code> like this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">git</span><span class="o">+</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">douglasrizzo</span><span class="o">/</span><span class="n">dodo_detector</span><span class="o">.</span><span class="n">git</span>
 </pre></div>
 </div>
 <div class="section" id="how-to-use">
 <h2>How to use<a class="headerlink" href="#how-to-use" title="Permalink to this headline">¶</a></h2>
-<p>The package has two types of detector, a keypoint-based detector and an
-SSD detector, which uses MobileNet v1.</p>
+<p>The package has two types of detector, a keypoint-based detector and an SSD detector, which uses MobileNet v1.</p>
 <div class="section" id="keypoint-based-detector">
 <h3>Keypoint-based detector<a class="headerlink" href="#keypoint-based-detector" title="Permalink to this headline">¶</a></h3>
-<p>The keypoint-based object detector uses OpenCV 3 keypoint detection and
-description algorithms (namely, SURF, SIFT and
-<a class="reference external" href="https://www.pyimagesearch.com/2015/04/13/implementing-rootsift-in-python-and-opencv/">RootSIFT</a>)
-together with feature matching algorithms in order to detect textures
-from a database directory on an image. I basically followed <a class="reference external" href="https://docs.opencv.org/3.4.1/d1/de0/tutorial_py_feature_homography.html">this
-tutorial</a>
-and implemented it in a more organized way.</p>
+<p>The keypoint-based object detector uses OpenCV 3 keypoint detection and description algorithms, namely, SURF <a class="footnote-reference" href="#id7" id="id3">[1]</a>, SIFT <a class="footnote-reference" href="#id8" id="id4">[2]</a> and RootSIFT <a class="footnote-reference" href="#id9" id="id5">[3]</a>) together with feature matching algorithms in order to detect textures from a database directory on an image. I basically followed <a class="reference external" href="https://docs.opencv.org/3.4.1/d1/de0/tutorial_py_feature_homography.html">this tutorial</a> and implemented it in a more organized way.</p>
+<p>Since OpenCV has no implementation of RootSIFT, I stole <a class="reference external" href="https://www.pyimagesearch.com/2015/04/13/implementing-rootsift-in-python-and-opencv/">this one</a>.</p>
 <p>Example on running a keypoint-based detector:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dodo_detector.detection</span> <span class="k">import</span> <span class="n">KeypointObjectDetector</span>
 <span class="n">KeypointObjectDetector</span><span class="p">(</span><span class="s1">&#39;/path/to/my/database&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">from_camera</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
@@ -85,41 +71,76 @@ and implemented it in a more organized way.</p>
     <span class="n">chocolate_milk</span>
         <span class="o">.</span>
         <span class="o">.</span>
-        <span class="o">.</span>
-    <span class="o">.</span>
     <span class="o">.</span>
     <span class="o">.</span>
 </pre></div>
 </div>
-<p>Basically, the top-level directory will contain subdirectories. The name
-of each subdirectory is the class name the program will return during
-detection. Inside each subdirectory is a collection of image files,
-whose keypoints will be extracted by the <code class="docutils literal notranslate"><span class="pre">KeypointObjectDetector</span></code>
-during the object construction. The keypoints will then be kept
-in-memory while the object exists.</p>
-<p>You can then use the methods provided by the detector to detect objects
-in your images, videos or camera feed.</p>
+<p>Basically, the top-level directory will contain subdirectories. The name of each subdirectory is the class name the program will return during detection. Inside each subdirectory is a collection of image files, whose keypoints will be extracted by the <code class="docutils literal notranslate"><span class="pre">KeypointObjectDetector</span></code> during the object construction. The keypoints will then be kept in-memory while the object exists.</p>
+<p>You can then use the methods provided by the detector to detect objects in your images, videos or camera feed.</p>
 </div>
-<div class="section" id="ssd-detector">
-<h3>SSD detector<a class="headerlink" href="#ssd-detector" title="Permalink to this headline">¶</a></h3>
-<p>This detector uses TensorFlow Object Detection API. Follow their
-tutorial on how to train your neural network. The resultant training
-procedure will give you the <em>frozen inference graph</em>, which is a <code class="docutils literal notranslate"><span class="pre">.pb</span></code>
-file; and a <em>label map</em>, which is a text file with extension <code class="docutils literal notranslate"><span class="pre">.pbtxt</span></code>
-containing the names of your object classes.</p>
-<p>When creating the SSDObjectDetector, the path to the frozen inference
-graph and label map must be passed, as well as the number of classes.</p>
+<div class="section" id="single-shot-detector-4">
+<h3>Single-shot detector <a class="footnote-reference" href="#id10" id="id6">[4]</a><a class="headerlink" href="#single-shot-detector-4" title="Permalink to this headline">¶</a></h3>
+<p>This detector uses TensorFlow Object Detection API. In order to use it, you must either train your own neural network using their API, or provide a trained network. I have a concise <a class="reference internal" href="tf_obj_tutorial/tf_obj_tutorial.html"><span class="doc">tutorial</span></a> on how to train a neural network, with other useful links.</p>
+<p>The resultant training procedure will give you the <em>frozen inference graph</em>, which is a <code class="docutils literal notranslate"><span class="pre">.pb</span></code> file; and a <em>label map</em>, which is a text file with extension <code class="docutils literal notranslate"><span class="pre">.pbtxt</span></code> containing the names of your object classes.</p>
+<p>When creating the single-shot detector, the path to the frozen inference graph and label map must be passed. The number of classes can be explicitly passed, or else classes will be counted from the contents of the label map.</p>
 <p>Example on running a single-shot detector:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dodo_detector.detection</span> <span class="k">import</span> <span class="n">SSDObjectDetector</span>
-<span class="n">SSDObjectDetector</span><span class="p">(</span><span class="s1">&#39;path/to/frozen/graph.pb&#39;</span><span class="p">,</span> <span class="s1">&#39;path/to/labels.pbtxt&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">from_camera</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dodo_detector.detection</span> <span class="k">import</span> <span class="n">SingleShotDetector</span>
+<span class="n">SingleShotDetector</span><span class="p">(</span><span class="s1">&#39;path/to/frozen/graph.pb&#39;</span><span class="p">,</span> <span class="s1">&#39;path/to/labels.pbtxt&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">from_camera</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Have fun!</p>
+<p class="rubric">References</p>
+<table class="docutils footnote" frame="void" id="id7" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id3">2</a>)</em> <ol class="last upperalpha simple" start="8">
+<li>Bay, A. Ess, T. Tuytelaars, and L. Van Gool, “Speeded-up robust features (SURF),” Computer vision and image understanding, vol. 110, no. 3, pp. 346–359, 2008.</li>
+</ol>
+</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id8" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[2]</td><td><em>(<a class="fn-backref" href="#id2">1</a>, <a class="fn-backref" href="#id4">2</a>)</em> <ol class="last upperalpha simple" start="4">
+<li><ol class="first upperalpha" start="7">
+<li>Lowe, “Object recognition from local scale-invariant features,” in Proceedings of the Seventh IEEE International Conference on Computer Vision, 1999, vol. 2, pp. 1150–1157.</li>
+</ol>
+</li>
+</ol>
+</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id9" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id5">[3]</a></td><td><ol class="first last upperalpha simple" start="18">
+<li>Arandjelović and A. Zisserman, “Three things everyone should know to improve object retrieval,” in 2012 IEEE Conference on Computer Vision and Pattern Recognition, 2012, pp. 2911–2918.</li>
+</ol>
+</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id10" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id6">[4]</a></td><td><ol class="first last upperalpha simple" start="23">
+<li>Liu et al., “SSD: Single Shot MultiBox Detector,” arXiv:1512.02325 [cs], vol. 9905, pp. 21–37, 2016.</li>
+</ol>
+</td></tr>
+</tbody>
+</table>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">dodo_detector</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="dodo_detector.html">dodo_detector package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tf_obj_tutorial/tf_obj_tutorial.html">TensorFlow Object Detection Model Training</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tf_obj_tutorial/tf_obj_tutorial.html#annotating-the-dataset">Annotating the dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tf_obj_tutorial/tf_obj_tutorial.html#traversing-the-text-file-hell">Traversing the text file hell…</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tf_obj_tutorial/tf_obj_tutorial.html#training-the-network">Training the network</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tf_obj_tutorial/tf_obj_tutorial.html#tips">Tips</a></li>
 </ul>
 </li>
 </ul>
@@ -147,7 +168,7 @@ graph and label map must be passed, as well as the number of classes.</p>
 <li><a class="reference internal" href="#">Dodo’s object detection package</a><ul>
 <li><a class="reference internal" href="#how-to-use">How to use</a><ul>
 <li><a class="reference internal" href="#keypoint-based-detector">Keypoint-based detector</a></li>
-<li><a class="reference internal" href="#ssd-detector">SSD detector</a></li>
+<li><a class="reference internal" href="#single-shot-detector-4">Single-shot detector </a></li>
 </ul>
 </li>
 </ul>

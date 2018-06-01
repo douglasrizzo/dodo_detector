@@ -136,8 +136,8 @@ and a dictionary listing objects and their locations as <cite>(ymin, xmin, ymax,
 </dd></dl>
 
 <dl class="class">
-<dt id="dodo_detector.detection.SSDObjectDetector">
-<em class="property">class </em><code class="descclassname">dodo_detector.detection.</code><code class="descname">SSDObjectDetector</code><span class="sig-paren">(</span><em>path_to_frozen_graph</em>, <em>path_to_labels</em>, <em>num_classes</em>, <em>confidence=0.8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dodo_detector/detection.html#SSDObjectDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dodo_detector.detection.SSDObjectDetector" title="Permalink to this definition">¶</a></dt>
+<dt id="dodo_detector.detection.SingleShotDetector">
+<em class="property">class </em><code class="descclassname">dodo_detector.detection.</code><code class="descname">SingleShotDetector</code><span class="sig-paren">(</span><em>path_to_frozen_graph</em>, <em>path_to_labels</em>, <em>num_classes</em>, <em>confidence=0.8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dodo_detector/detection.html#SingleShotDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dodo_detector.detection.SingleShotDetector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#dodo_detector.detection.ObjectDetector" title="dodo_detector.detection.ObjectDetector"><code class="xref py py-class docutils literal notranslate"><span class="pre">dodo_detector.detection.ObjectDetector</span></code></a></p>
 <p>Object detector powered by the TensorFlow Object Detection API.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -155,8 +155,8 @@ and a dictionary listing objects and their locations as <cite>(ymin, xmin, ymax,
 </tbody>
 </table>
 <dl class="method">
-<dt id="dodo_detector.detection.SSDObjectDetector.from_image">
-<code class="descname">from_image</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dodo_detector/detection.html#SSDObjectDetector.from_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dodo_detector.detection.SSDObjectDetector.from_image" title="Permalink to this definition">¶</a></dt>
+<dt id="dodo_detector.detection.SingleShotDetector.from_image">
+<code class="descname">from_image</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dodo_detector/detection.html#SingleShotDetector.from_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dodo_detector.detection.SingleShotDetector.from_image" title="Permalink to this definition">¶</a></dt>
 <dd><p>Detects objects in an image</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
