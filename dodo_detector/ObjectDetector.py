@@ -5,7 +5,8 @@ from abc import ABCMeta, abstractmethod
 from imutils.video import WebcamVideoStream
 
 
-class ObjectDetector(metaclass=ABCMeta):
+class ObjectDetector():
+    __metaclass__ = ABCMeta
 
     @abstractmethod
     def from_image(self, frame):
@@ -18,25 +19,38 @@ class ObjectDetector(metaclass=ABCMeta):
         """
         pass
 
-    def _detect_from_stream(self, get_frame, stream):
+    def _detect_from_stream(self, get_frame, stream, record=None, view=False):
         """
         This internal method detects objects from images retrieved from a stream, given a method that extracts frames from this stream
 
         :param get_frame: a method that extracts frames from the stream
         :param stream: an object representing a stream of images
+        :param record: path to a video file to record the detection stream, or None for no recording
+        :param view: whether to open an OpenCV window to view the results in real-time
         """
         ret, frame = get_frame(stream)
+
+        if record is not None:
+            fourcc = cv2.VideoWriter_fourcc(*'MP4V')
+            out = cv2.VideoWriter(record, fourcc, 25.0, (640,480))
 
         while ret:
             marked_frame, objects = self.from_image(frame)
 
-            cv2.imshow("image", marked_frame)
-            if cv2.waitKey(1) == 27:
-                break  # ESC to quit
+            if record is not None:
+                out.write(marked_frame)
+
+            if view:
+                cv2.imshow("Detected Objects", marked_frame)
+                if cv2.waitKey(1) == 27:
+                    break  # ESC to quit
 
             ret, frame = get_frame(stream)
 
         cv2.destroyAllWindows()
+
+        if record is not None:
+            out.release()
 
     def from_camera(self, camera_id=0):
         """
