@@ -20,9 +20,10 @@ class ObjectDetector(metaclass=ABCMeta):
 
         :param frame: a numpy.ndarray containing the image where objects will be detected
         :return: a tuple containing the image, with objects marked by rectangles,
-        and a dictionary listing objects and their locations as `(ymin, xmin, ymax, xmax)`
+                 and a dictionary listing objects and their locations as `(ymin, xmin, ymax, xmax)`
         """
         pass
+
 
     def _detect_from_stream(self, get_frame, stream):
         """

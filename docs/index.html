@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Object detection &#8212; dodo detector 0.0.2 documentation</title>
+    <title>Dodo’s object detection package &#8212; dodo detector 0.2 documentation</title>
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -30,7 +30,7 @@
         <li class="right" >
           <a href="modules.html" title="dodo_detector"
              accesskey="N">next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">dodo detector 0.0.2 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="#">dodo detector 0.2 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -39,8 +39,8 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="object-detection">
-<h1>Object detection<a class="headerlink" href="#object-detection" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="dodo-s-object-detection-package">
+<h1>Dodo’s object detection package<a class="headerlink" href="#dodo-s-object-detection-package" title="Permalink to this headline">¶</a></h1>
 <p>This a Python package I made to make object detection easier. Besides de
 dependencies listed on <code class="docutils literal notranslate"><span class="pre">setup.py</span></code>, it also depends on the <a class="reference external" href="https://github.com/opencv/opencv_contrib">OpenCV 3
 nonfree/contrib packages</a>,
@@ -68,8 +68,8 @@ from a database directory on an image. I basically followed <a class="reference 
 tutorial</a>
 and implemented it in a more organized way.</p>
 <p>Example on running a keypoint-based detector:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dodo_detector</span> <span class="k">import</span> <span class="n">KeypointObjectDetector</span>
-<span class="n">KeypointObjectDetector</span><span class="o">.</span><span class="n">KeypointObjectDetector</span><span class="p">(</span><span class="s1">&#39;/path/to/my/database&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">from_camera</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dodo_detector.detection</span> <span class="k">import</span> <span class="n">KeypointObjectDetector</span>
+<span class="n">KeypointObjectDetector</span><span class="p">(</span><span class="s1">&#39;/path/to/my/database&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">from_camera</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The database directory must have the following structure:</p>
@@ -91,7 +91,7 @@ and implemented it in a more organized way.</p>
     <span class="o">.</span>
 </pre></div>
 </div>
-<p>Basically, the top-level directory will contain subdirectory. The name
+<p>Basically, the top-level directory will contain subdirectories. The name
 of each subdirectory is the class name the program will return during
 detection. Inside each subdirectory is a collection of image files,
 whose keypoints will be extracted by the <code class="docutils literal notranslate"><span class="pre">KeypointObjectDetector</span></code>
@@ -110,8 +110,8 @@ containing the names of your object classes.</p>
 <p>When creating the SSDObjectDetector, the path to the frozen inference
 graph and label map must be passed, as well as the number of classes.</p>
 <p>Example on running a single-shot detector:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dodo_detector</span> <span class="k">import</span> <span class="n">SSDObjectDetector</span>
-<span class="n">SSDObjectDetector</span><span class="o">.</span><span class="n">SSDObjectDetector</span><span class="p">(</span><span class="s1">&#39;path/to/frozen/graph.pb&#39;</span><span class="p">,</span> <span class="s1">&#39;path/to/labels.pbtxt&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">from_camera</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dodo_detector.detection</span> <span class="k">import</span> <span class="n">SSDObjectDetector</span>
+<span class="n">SSDObjectDetector</span><span class="p">(</span><span class="s1">&#39;path/to/frozen/graph.pb&#39;</span><span class="p">,</span> <span class="s1">&#39;path/to/labels.pbtxt&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">from_camera</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Have fun!</p>
@@ -144,7 +144,7 @@ graph and label map must be passed, as well as the number of classes.</p>
         <div class="sphinxsidebarwrapper">
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Object detection</a><ul>
+<li><a class="reference internal" href="#">Dodo’s object detection package</a><ul>
 <li><a class="reference internal" href="#how-to-use">How to use</a><ul>
 <li><a class="reference internal" href="#keypoint-based-detector">Keypoint-based detector</a></li>
 <li><a class="reference internal" href="#ssd-detector">SSD detector</a></li>
@@ -193,7 +193,7 @@ graph and label map must be passed, as well as the number of classes.</p>
         <li class="right" >
           <a href="modules.html" title="dodo_detector"
              >next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">dodo detector 0.0.2 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="#">dodo detector 0.2 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
