@@ -280,7 +280,7 @@ class KeypointObjectDetector(ObjectDetector):
         return frame, detected_objects
 
 
-class SSDObjectDetector(ObjectDetector):
+class SingleShotDetector(ObjectDetector):
     """
     Object detector powered by the TensorFlow Object Detection API.
 

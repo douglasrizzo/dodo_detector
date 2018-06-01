@@ -81,14 +81,13 @@ procedure will give you the *frozen inference graph*, which is a ``.pb``
 file; and a *label map*, which is a text file with extension ``.pbtxt``
 containing the names of your object classes.
 
-When creating the SSDObjectDetector, the path to the frozen inference
-graph and label map must be passed, as well as the number of classes.
+When creating the single-shot detector, the path to the frozen inference graph and label map must be passed. The number of classes can be explicitly passed, or else classes will be counted from the contents of the label map.
 
 Example on running a single-shot detector:
 
 ::
 
-   from dodo_detector.detection import SSDObjectDetector
-   SSDObjectDetector('path/to/frozen/graph.pb', 'path/to/labels.pbtxt', 5).from_camera(0)
+   from dodo_detector.detection import SingleShotDetector
+   SingleShotDetector('path/to/frozen/graph.pb', 'path/to/labels.pbtxt', 5).from_camera(0)
 
 Have fun!
