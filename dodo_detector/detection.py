@@ -1,14 +1,81 @@
 #!/usr/bin/env python
 
-import os
-from os import listdir
-from os.path import isfile, join
-
 import cv2
 import numpy as np
-from tqdm import tqdm
+import tensorflow as tf
 
-from dodo_detector.ObjectDetector import ObjectDetector
+from abc import ABCMeta, abstractmethod
+from object_detection.utils import label_map_util
+from object_detection.utils import visualization_utils as vis_util
+from imutils.video import WebcamVideoStream
+
+
+class ObjectDetector(metaclass=ABCMeta):
+
+    @abstractmethod
+    def from_image(self, frame):
+        """
+        Detects objects in an image
+
+        :param frame: a numpy.ndarray containing the image where objects will be detected
+        :return: a tuple containing the image, with objects marked by rectangles,
+        and a dictionary listing objects and their locations as `(ymin, xmin, ymax, xmax)`
+        """
+        pass
+
+    def _detect_from_stream(self, get_frame, stream):
+        """
+        This internal method detects objects from images retrieved from a stream, given a method that extracts frames from this stream
+
+        :param get_frame: a method that extracts frames from the stream
+        :param stream: an object representing a stream of images
+        """
+        ret, frame = get_frame(stream)
+
+        while ret:
+            marked_frame, objects = self.from_image(frame)
+
+            cv2.imshow("image", marked_frame)
+            if cv2.waitKey(1) == 27:
+                break  # ESC to quit
+
+            ret, frame = get_frame(stream)
+
+        cv2.destroyAllWindows()
+
+    def from_camera(self, camera_id=0):
+        """
+        Detects objects in frames from a camera feed
+
+        :param camera_id: the ID of the camera in the system
+        """
+
+        def get_frame(stream):
+            frame = stream.read()
+            ret = True
+            return ret, frame
+
+        stream = WebcamVideoStream(src=camera_id)
+
+        stream.start()
+        self._detect_from_stream(get_frame, stream)
+        stream.stop()
+
+    def from_video(self, filepath):
+        """
+        Detects objects in frames from a video file
+        
+        :param filepath: the path to the video file
+        """
+
+        def get_frame(stream):
+            ret, frame = stream.read()
+            return ret, frame
+
+        stream = cv2.VideoCapture()
+        stream.open(filename=filepath)
+
+        self._detect_from_stream(get_frame, stream)
 
 
 class KeypointObjectDetector(ObjectDetector):
@@ -206,3 +273,95 @@ class KeypointObjectDetector(ObjectDetector):
                 cv2.putText(frame, object_name + ': ' + str(self.object_counters[object_name]), text_point, cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.2, (0, 0, 0), 2)
 
         return frame, detected_objects
+
+
+class SSDObjectDetector(ObjectDetector):
+
+    def __init__(self, path_to_frozen_graph, path_to_labels, num_classes, confidence=.8):
+        """
+        Object detector powered by the TensorFlow Object Detection API.
+
+        :param path_to_frozen_graph: path to the frozen inference graph file, a file with a `.pb` extension
+        :param path_to_labels: path to the label map, a text file with the `.pbtxt` extension
+        :param num_classes: number of object classes that will be detected
+        :param confidence: a value between 0 and 1 representing the confidence level the network has in the detection to consider it an actual detection
+        """
+
+        if not 0 < confidence <= 1:
+            raise ValueError("confidence must be between 0 and 1")
+
+        # load (frozen) tensorflow model into memory
+        self.detection_graph = tf.Graph()
+        with self.detection_graph.as_default():
+            od_graph_def = tf.GraphDef()
+            with tf.gfile.GFile(path_to_frozen_graph, 'rb') as fid:
+                serialized_graph = fid.read()
+                od_graph_def.ParseFromString(serialized_graph)
+                tf.import_graph_def(od_graph_def, name='')
+
+        # Label maps map indices to category names, so that when our convolution
+        # network predicts 5, we know that this corresponds to airplane.
+        # Here we use internal utility functions, but anything that returns a
+        # dictionary mapping integers to appropriate string labels would be fine
+        label_map = label_map_util.load_labelmap(path_to_labels)
+        self.categories = label_map_util.convert_label_map_to_categories(label_map, max_num_classes=num_classes, use_display_name=True)
+        self.category_index = label_map_util.create_category_index(self.categories)
+        self.confidence = confidence
+
+    def from_image(self, frame):
+        # object recognition begins here
+        height, width, z = frame.shape
+        with self.detection_graph.as_default():
+            with tf.Session(graph=self.detection_graph) as sess:
+                image_np_expanded = np.expand_dims(frame, axis=0)
+                image_tensor = self.detection_graph.get_tensor_by_name('image_tensor:0')
+                # Each box represents a part of the image where a particular object was detected.
+                boxes = self.detection_graph.get_tensor_by_name('detection_boxes:0')
+                # Each score represent how level of confidence for each of the objects.
+                # Score is shown on the result image, together with the class label.
+                scores = self.detection_graph.get_tensor_by_name('detection_scores:0')
+                classes = self.detection_graph.get_tensor_by_name('detection_classes:0')
+                num_detections = self.detection_graph.get_tensor_by_name('num_detections:0')
+
+                # Actual detection
+                (boxes, scores, classes, num_detections) = sess.run([boxes, scores, classes, num_detections], feed_dict={image_tensor: image_np_expanded})
+
+                detected_objects = {}
+
+                # for each detection
+                for x in range(scores.shape[0]):
+                    # scores are given in descending order,
+                    # so we only check the first one to see if it's
+                    # higher than the minimum confidence
+                    if scores[x, 0] < self.confidence:
+                        break
+
+                    class_name = self.categories[int(classes[x][0]) - 1]['name']  # nome do objeto dentro do dicionário de objetos
+
+                    # get the detection box around the object
+                    box_objects = boxes[x][0]
+                    # positions of the box are between 0 and 1, relative to the size of the image
+                    # we multiply them to get the box location in pixels
+                    ymin = int(box_objects[0] * height)
+                    xmin = int(box_objects[1] * width)
+                    ymax = int(box_objects[2] * height)
+                    xmax = int(box_objects[3] * width)
+
+                    if class_name not in detected_objects:
+                        detected_objects[class_name] = []
+
+                    detected_objects[class_name].append((ymin, xmin, ymax, xmax))
+
+                # Visualization of the results of a detection.
+                vis_util.visualize_boxes_and_labels_on_image_array(
+                    frame,
+                    np.squeeze(boxes),
+                    np.squeeze(classes).astype(np.int32),
+                    np.squeeze(scores),
+                    self.category_index,
+                    use_normalized_coordinates=True,
+                    line_thickness=8
+                )
+                ################################
+
+                return frame, detected_objects
