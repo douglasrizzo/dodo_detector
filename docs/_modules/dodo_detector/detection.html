@@ -51,6 +51,9 @@
 
 
 <div class="viewcode-block" id="ObjectDetector"><a class="viewcode-back" href="../../dodo_detector.html#dodo_detector.detection.ObjectDetector">[docs]</a><span class="k">class</span> <span class="nc">ObjectDetector</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for object detectors used by the package.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="ObjectDetector.from_image"><a class="viewcode-back" href="../../dodo_detector.html#dodo_detector.detection.ObjectDetector.from_image">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">from_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
@@ -120,17 +123,17 @@
 
 
 <div class="viewcode-block" id="KeypointObjectDetector"><a class="viewcode-back" href="../../dodo_detector.html#dodo_detector.detection.KeypointObjectDetector">[docs]</a><span class="k">class</span> <span class="nc">KeypointObjectDetector</span><span class="p">(</span><span class="n">ObjectDetector</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Object detector based on keypoints. This class depends on OpenCV SIFT and SURF feature detection algorithms,</span>
+<span class="sd">    as well as the brute-force and FLANN-based feature matchers.</span>
+
+<span class="sd">    :param database_path: Path to the top-level directory containing subdirectories, each subdirectory named after a class of objects and containing images of that object.</span>
+<span class="sd">    :param detector_type: either `SURF`, `SIFT` or `RootSIFT`</span>
+<span class="sd">    :param matcher_type: either `BF` for brute-force matcher or `FLANN` for flann-based matcher</span>
+<span class="sd">    :param min_points: minimum number of keypoints necessary for an object to be considered detected in an image</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">database_path</span><span class="p">,</span> <span class="n">detector_type</span><span class="o">=</span><span class="s1">&#39;RootSIFT&#39;</span><span class="p">,</span> <span class="n">matcher_type</span><span class="o">=</span><span class="s1">&#39;BF&#39;</span><span class="p">,</span> <span class="n">min_points</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Object detector based on keypoints. This class depends on OpenCV SIFT and SURF feature detection algorithms,</span>
-<span class="sd">        as well as the brute-force and FLANN-based feature matchers.</span>
-
-<span class="sd">        :param database_path: Path to the top-level directory containing subdirectories, each subdirectory named after a class of objects and containing images of that object.</span>
-<span class="sd">        :param detector_type: either `SURF`, `SIFT` or `RootSIFT`</span>
-<span class="sd">        :param matcher_type: either `BF` for brute-force matcher or `FLANN` for flann-based matcher</span>
-<span class="sd">        :param min_points: minimum number of keypoints necessary for an object to be considered detected in an image</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">current_frame</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">detector_type</span> <span class="o">=</span> <span class="n">detector_type</span>
 
@@ -317,16 +320,16 @@
 
 
 <div class="viewcode-block" id="SSDObjectDetector"><a class="viewcode-back" href="../../dodo_detector.html#dodo_detector.detection.SSDObjectDetector">[docs]</a><span class="k">class</span> <span class="nc">SSDObjectDetector</span><span class="p">(</span><span class="n">ObjectDetector</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Object detector powered by the TensorFlow Object Detection API.</span>
+
+<span class="sd">    :param path_to_frozen_graph: path to the frozen inference graph file, a file with a `.pb` extension</span>
+<span class="sd">    :param path_to_labels: path to the label map, a text file with the `.pbtxt` extension</span>
+<span class="sd">    :param num_classes: number of object classes that will be detected</span>
+<span class="sd">    :param confidence: a value between 0 and 1 representing the confidence level the network has in the detection to consider it an actual detection</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_to_frozen_graph</span><span class="p">,</span> <span class="n">path_to_labels</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=.</span><span class="mi">8</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Object detector powered by the TensorFlow Object Detection API.</span>
-
-<span class="sd">        :param path_to_frozen_graph: path to the frozen inference graph file, a file with a `.pb` extension</span>
-<span class="sd">        :param path_to_labels: path to the label map, a text file with the `.pbtxt` extension</span>
-<span class="sd">        :param num_classes: number of object classes that will be detected</span>
-<span class="sd">        :param confidence: a value between 0 and 1 representing the confidence level the network has in the detection to consider it an actual detection</span>
-<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">confidence</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;confidence must be between 0 and 1&quot;</span><span class="p">)</span>

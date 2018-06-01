@@ -12,6 +12,9 @@ from imutils.video import WebcamVideoStream
 
 
 class ObjectDetector(metaclass=ABCMeta):
+    """
+    Base class for object detectors used by the package.
+    """
 
     @abstractmethod
     def from_image(self, frame):
@@ -81,17 +84,17 @@ class ObjectDetector(metaclass=ABCMeta):
 
 
 class KeypointObjectDetector(ObjectDetector):
+    """
+    Object detector based on keypoints. This class depends on OpenCV SIFT and SURF feature detection algorithms,
+    as well as the brute-force and FLANN-based feature matchers.
+
+    :param database_path: Path to the top-level directory containing subdirectories, each subdirectory named after a class of objects and containing images of that object.
+    :param detector_type: either `SURF`, `SIFT` or `RootSIFT`
+    :param matcher_type: either `BF` for brute-force matcher or `FLANN` for flann-based matcher
+    :param min_points: minimum number of keypoints necessary for an object to be considered detected in an image
+    """
 
     def __init__(self, database_path, detector_type='RootSIFT', matcher_type='BF', min_points=10):
-        """
-        Object detector based on keypoints. This class depends on OpenCV SIFT and SURF feature detection algorithms,
-        as well as the brute-force and FLANN-based feature matchers.
-
-        :param database_path: Path to the top-level directory containing subdirectories, each subdirectory named after a class of objects and containing images of that object.
-        :param detector_type: either `SURF`, `SIFT` or `RootSIFT`
-        :param matcher_type: either `BF` for brute-force matcher or `FLANN` for flann-based matcher
-        :param min_points: minimum number of keypoints necessary for an object to be considered detected in an image
-        """
         self.current_frame = 0
         self.detector_type = detector_type
 
@@ -278,16 +281,16 @@ class KeypointObjectDetector(ObjectDetector):
 
 
 class SSDObjectDetector(ObjectDetector):
+    """
+    Object detector powered by the TensorFlow Object Detection API.
+
+    :param path_to_frozen_graph: path to the frozen inference graph file, a file with a `.pb` extension
+    :param path_to_labels: path to the label map, a text file with the `.pbtxt` extension
+    :param num_classes: number of object classes that will be detected
+    :param confidence: a value between 0 and 1 representing the confidence level the network has in the detection to consider it an actual detection
+    """
 
     def __init__(self, path_to_frozen_graph, path_to_labels, num_classes, confidence=.8):
-        """
-        Object detector powered by the TensorFlow Object Detection API.
-
-        :param path_to_frozen_graph: path to the frozen inference graph file, a file with a `.pb` extension
-        :param path_to_labels: path to the label map, a text file with the `.pbtxt` extension
-        :param num_classes: number of object classes that will be detected
-        :param confidence: a value between 0 and 1 representing the confidence level the network has in the detection to consider it an actual detection
-        """
 
         if not 0 < confidence <= 1:
             raise ValueError("confidence must be between 0 and 1")
