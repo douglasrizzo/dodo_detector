@@ -11,10 +11,11 @@ from object_detection.utils import visualization_utils as vis_util
 from imutils.video import WebcamVideoStream
 
 
-class ObjectDetector(metaclass=ABCMeta):
+class ObjectDetector():
     """
     Base class for object detectors used by the package.
     """
+    __metaclass__ = ABCMeta
 
     @abstractmethod
     def from_image(self, frame):
