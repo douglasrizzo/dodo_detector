@@ -342,7 +342,8 @@ class SingleShotDetector(ObjectDetector):
                     if scores[x, 0] < self.confidence:
                         break
 
-                    class_name = self.categories[int(classes[x][0]) - 1]['name']  # nome do objeto dentro do dicionário de objetos
+                    # capture the class of the detected object
+                    class_name = self.categories[int(classes[x][0]) - 1]['name']
 
                     # get the detection box around the object
                     box_objects = boxes[x][0]
