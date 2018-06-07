@@ -80,7 +80,7 @@
 </div>
 <div class="section" id="single-shot-detector-4">
 <h3>Single-shot detector <a class="footnote-reference" href="#id10" id="id6">[4]</a><a class="headerlink" href="#single-shot-detector-4" title="Permalink to this headline">¶</a></h3>
-<p>This detector uses TensorFlow Object Detection API. In order to use it, you must either train your own neural network using their API, or provide a trained network. I have a concise <a class="reference internal" href="tf_obj_tutorial/tf_obj_tutorial.html"><span class="doc">tutorial</span></a> on how to train a neural network, with other useful links.</p>
+<p>This detector uses TensorFlow Object Detection API. In order to use it, you must either train your own neural network using their API, or provide a trained network. I have a concise <a class="reference external" href="https://gist.github.com/douglasrizzo/c70e186678f126f1b9005ca83d8bd2ce">tutorial</a> on how to train a neural network, with other useful links.</p>
 <p>The resultant training procedure will give you the <em>frozen inference graph</em>, which is a <code class="docutils literal notranslate"><span class="pre">.pb</span></code> file; and a <em>label map</em>, which is a text file with extension <code class="docutils literal notranslate"><span class="pre">.pbtxt</span></code> containing the names of your object classes.</p>
 <p>When creating the single-shot detector, the path to the frozen inference graph and label map must be passed. The number of classes can be explicitly passed, or else classes will be counted from the contents of the label map.</p>
 <p>Example on running a single-shot detector:</p>
@@ -134,13 +134,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">dodo_detector</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="dodo_detector.html">dodo_detector package</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="tf_obj_tutorial/tf_obj_tutorial.html">TensorFlow Object Detection Model Training</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tf_obj_tutorial/tf_obj_tutorial.html#annotating-the-dataset">Annotating the dataset</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tf_obj_tutorial/tf_obj_tutorial.html#traversing-the-text-file-hell">Traversing the text file hell…</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tf_obj_tutorial/tf_obj_tutorial.html#training-the-network">Training the network</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tf_obj_tutorial/tf_obj_tutorial.html#tips">Tips</a></li>
 </ul>
 </li>
 </ul>

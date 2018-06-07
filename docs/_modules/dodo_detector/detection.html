@@ -50,10 +50,11 @@
 <span class="kn">from</span> <span class="nn">imutils.video</span> <span class="k">import</span> <span class="n">WebcamVideoStream</span>
 
 
-<div class="viewcode-block" id="ObjectDetector"><a class="viewcode-back" href="../../dodo_detector.html#dodo_detector.detection.ObjectDetector">[docs]</a><span class="k">class</span> <span class="nc">ObjectDetector</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
+<div class="viewcode-block" id="ObjectDetector"><a class="viewcode-back" href="../../dodo_detector.html#dodo_detector.detection.ObjectDetector">[docs]</a><span class="k">class</span> <span class="nc">ObjectDetector</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for object detectors used by the package.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">ABCMeta</span>
 
 <div class="viewcode-block" id="ObjectDetector.from_image"><a class="viewcode-back" href="../../dodo_detector.html#dodo_detector.detection.ObjectDetector.from_image">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">from_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
@@ -323,20 +324,20 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Object detector powered by the TensorFlow Object Detection API.</span>
 
-<span class="sd">    :param path_to_frozen_graph: path to the frozen inference graph file, a file with a `.pb` extension</span>
-<span class="sd">    :param path_to_labels: path to the label map, a text file with the `.pbtxt` extension</span>
-<span class="sd">    :param num_classes: number of object classes that will be detected</span>
-<span class="sd">    :param confidence: a value between 0 and 1 representing the confidence level the network has in the detection to consider it an actual detection</span>
+<span class="sd">    :param path_to_frozen_graph: path to the frozen inference graph file, a file with a `.pb` extension.</span>
+<span class="sd">    :param path_to_labels: path to the label map, a text file with the `.pbtxt` extension.</span>
+<span class="sd">    :param num_classes: number of object classes that will be detected. If None, it will be guessed by the contents of the label map.</span>
+<span class="sd">    :param confidence: a value between 0 and 1 representing the confidence level the network has in the detection to consider it an actual detection.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_to_frozen_graph</span><span class="p">,</span> <span class="n">path_to_labels</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=.</span><span class="mi">8</span><span class="p">):</span>
 
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_to_frozen_graph</span><span class="p">,</span> <span class="n">path_to_labels</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=.</span><span class="mi">8</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">confidence</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;confidence must be between 0 and 1&quot;</span><span class="p">)</span>
 
         <span class="c1"># load (frozen) tensorflow model into memory</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">detection_graph</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">detection_graph</span><span class="o">.</span><span class="n">as_default</span><span class="p">():</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_detection_graph</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_detection_graph</span><span class="o">.</span><span class="n">as_default</span><span class="p">():</span>
             <span class="n">od_graph_def</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">GraphDef</span><span class="p">()</span>
             <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">gfile</span><span class="o">.</span><span class="n">GFile</span><span class="p">(</span><span class="n">path_to_frozen_graph</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fid</span><span class="p">:</span>
                 <span class="n">serialized_graph</span> <span class="o">=</span> <span class="n">fid</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
@@ -348,67 +349,76 @@
         <span class="c1"># Here we use internal utility functions, but anything that returns a</span>
         <span class="c1"># dictionary mapping integers to appropriate string labels would be fine</span>
         <span class="n">label_map</span> <span class="o">=</span> <span class="n">label_map_util</span><span class="o">.</span><span class="n">load_labelmap</span><span class="p">(</span><span class="n">path_to_labels</span><span class="p">)</span>
+ 
+        <span class="c1"># this is a workaround to guess the number of classes by the contents of the label map</span>
+        <span class="c1"># it may not be perfect</span>
+        <span class="k">if</span> <span class="n">num_classes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">label_map_contents</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path_to_labels</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="n">num_classes</span> <span class="o">=</span> <span class="n">label_map_contents</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;name:&#39;</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">categories</span> <span class="o">=</span> <span class="n">label_map_util</span><span class="o">.</span><span class="n">convert_label_map_to_categories</span><span class="p">(</span><span class="n">label_map</span><span class="p">,</span> <span class="n">max_num_classes</span><span class="o">=</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">use_display_name</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">category_index</span> <span class="o">=</span> <span class="n">label_map_util</span><span class="o">.</span><span class="n">create_category_index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">categories</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">confidence</span> <span class="o">=</span> <span class="n">confidence</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_session</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_detection_graph</span><span class="p">)</span>
+
 <div class="viewcode-block" id="SingleShotDetector.from_image"><a class="viewcode-back" href="../../dodo_detector.html#dodo_detector.detection.SingleShotDetector.from_image">[docs]</a>    <span class="k">def</span> <span class="nf">from_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
         <span class="c1"># object recognition begins here</span>
         <span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">shape</span>
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">detection_graph</span><span class="o">.</span><span class="n">as_default</span><span class="p">():</span>
-            <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">graph</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">detection_graph</span><span class="p">)</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
-                <span class="n">image_np_expanded</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-                <span class="n">image_tensor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detection_graph</span><span class="o">.</span><span class="n">get_tensor_by_name</span><span class="p">(</span><span class="s1">&#39;image_tensor:0&#39;</span><span class="p">)</span>
-                <span class="c1"># Each box represents a part of the image where a particular object was detected.</span>
-                <span class="n">boxes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detection_graph</span><span class="o">.</span><span class="n">get_tensor_by_name</span><span class="p">(</span><span class="s1">&#39;detection_boxes:0&#39;</span><span class="p">)</span>
-                <span class="c1"># Each score represent how level of confidence for each of the objects.</span>
-                <span class="c1"># Score is shown on the result image, together with the class label.</span>
-                <span class="n">scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detection_graph</span><span class="o">.</span><span class="n">get_tensor_by_name</span><span class="p">(</span><span class="s1">&#39;detection_scores:0&#39;</span><span class="p">)</span>
-                <span class="n">classes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detection_graph</span><span class="o">.</span><span class="n">get_tensor_by_name</span><span class="p">(</span><span class="s1">&#39;detection_classes:0&#39;</span><span class="p">)</span>
-                <span class="n">num_detections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detection_graph</span><span class="o">.</span><span class="n">get_tensor_by_name</span><span class="p">(</span><span class="s1">&#39;num_detections:0&#39;</span><span class="p">)</span>
 
-                <span class="c1"># Actual detection</span>
-                <span class="p">(</span><span class="n">boxes</span><span class="p">,</span> <span class="n">scores</span><span class="p">,</span> <span class="n">classes</span><span class="p">,</span> <span class="n">num_detections</span><span class="p">)</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="n">boxes</span><span class="p">,</span> <span class="n">scores</span><span class="p">,</span> <span class="n">classes</span><span class="p">,</span> <span class="n">num_detections</span><span class="p">],</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">image_tensor</span><span class="p">:</span> <span class="n">image_np_expanded</span><span class="p">})</span>
+        <span class="n">image_np_expanded</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">image_tensor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_detection_graph</span><span class="o">.</span><span class="n">get_tensor_by_name</span><span class="p">(</span><span class="s1">&#39;image_tensor:0&#39;</span><span class="p">)</span>
+        <span class="c1"># Each box represents a part of the image where a particular object was detected.</span>
+        <span class="n">boxes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_detection_graph</span><span class="o">.</span><span class="n">get_tensor_by_name</span><span class="p">(</span><span class="s1">&#39;detection_boxes:0&#39;</span><span class="p">)</span>
+        <span class="c1"># Each score represent how level of confidence for each of the objects.</span>
+        <span class="c1"># Score is shown on the result image, together with the class label.</span>
+        <span class="n">scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_detection_graph</span><span class="o">.</span><span class="n">get_tensor_by_name</span><span class="p">(</span><span class="s1">&#39;detection_scores:0&#39;</span><span class="p">)</span>
+        <span class="n">classes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_detection_graph</span><span class="o">.</span><span class="n">get_tensor_by_name</span><span class="p">(</span><span class="s1">&#39;detection_classes:0&#39;</span><span class="p">)</span>
+        <span class="n">num_detections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_detection_graph</span><span class="o">.</span><span class="n">get_tensor_by_name</span><span class="p">(</span><span class="s1">&#39;num_detections:0&#39;</span><span class="p">)</span>
 
-                <span class="n">detected_objects</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="c1"># Actual detection</span>
+        <span class="p">(</span><span class="n">boxes</span><span class="p">,</span> <span class="n">scores</span><span class="p">,</span> <span class="n">classes</span><span class="p">,</span> <span class="n">num_detections</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_session</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="n">boxes</span><span class="p">,</span> <span class="n">scores</span><span class="p">,</span> <span class="n">classes</span><span class="p">,</span> <span class="n">num_detections</span><span class="p">],</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">image_tensor</span><span class="p">:</span> <span class="n">image_np_expanded</span><span class="p">})</span>
 
-                <span class="c1"># for each detection</span>
-                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">scores</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-                    <span class="c1"># scores are given in descending order,</span>
-                    <span class="c1"># so we only check the first one to see if it&#39;s</span>
-                    <span class="c1"># higher than the minimum confidence</span>
-                    <span class="k">if</span> <span class="n">scores</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">confidence</span><span class="p">:</span>
-                        <span class="k">break</span>
+        <span class="n">detected_objects</span> <span class="o">=</span> <span class="p">{}</span>
 
-                    <span class="n">class_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">categories</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">classes</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>  <span class="c1"># nome do objeto dentro do dicionário de objetos</span>
+        <span class="c1"># for each detection</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">scores</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="c1"># scores are given in descending order,</span>
+            <span class="c1"># so we only check the first one to see if it&#39;s</span>
+            <span class="c1"># higher than the minimum confidence</span>
+            <span class="k">if</span> <span class="n">scores</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">confidence</span><span class="p">:</span>
+                <span class="k">break</span>
 
-                    <span class="c1"># get the detection box around the object</span>
-                    <span class="n">box_objects</span> <span class="o">=</span> <span class="n">boxes</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-                    <span class="c1"># positions of the box are between 0 and 1, relative to the size of the image</span>
-                    <span class="c1"># we multiply them to get the box location in pixels</span>
-                    <span class="n">ymin</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">box_objects</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">height</span><span class="p">)</span>
-                    <span class="n">xmin</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">box_objects</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">width</span><span class="p">)</span>
-                    <span class="n">ymax</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">box_objects</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">height</span><span class="p">)</span>
-                    <span class="n">xmax</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">box_objects</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">width</span><span class="p">)</span>
+            <span class="c1"># capture the class of the detected object</span>
+            <span class="n">class_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">categories</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">classes</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
 
-                    <span class="k">if</span> <span class="n">class_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">detected_objects</span><span class="p">:</span>
-                        <span class="n">detected_objects</span><span class="p">[</span><span class="n">class_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="c1"># get the detection box around the object</span>
+            <span class="n">box_objects</span> <span class="o">=</span> <span class="n">boxes</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="c1"># positions of the box are between 0 and 1, relative to the size of the image</span>
+            <span class="c1"># we multiply them to get the box location in pixels</span>
+            <span class="n">ymin</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">box_objects</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">height</span><span class="p">)</span>
+            <span class="n">xmin</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">box_objects</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">width</span><span class="p">)</span>
+            <span class="n">ymax</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">box_objects</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">height</span><span class="p">)</span>
+            <span class="n">xmax</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">box_objects</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">width</span><span class="p">)</span>
 
-                    <span class="n">detected_objects</span><span class="p">[</span><span class="n">class_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ymin</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">,</span> <span class="n">xmax</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">class_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">detected_objects</span><span class="p">:</span>
+                <span class="n">detected_objects</span><span class="p">[</span><span class="n">class_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
-                <span class="c1"># Visualization of the results of a detection.</span>
-                <span class="n">vis_util</span><span class="o">.</span><span class="n">visualize_boxes_and_labels_on_image_array</span><span class="p">(</span>
-                    <span class="n">frame</span><span class="p">,</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">boxes</span><span class="p">),</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">classes</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">scores</span><span class="p">),</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">category_index</span><span class="p">,</span>
-                    <span class="n">use_normalized_coordinates</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                    <span class="n">line_thickness</span><span class="o">=</span><span class="mi">8</span>
-                <span class="p">)</span>
-                <span class="c1">################################</span>
+            <span class="n">detected_objects</span><span class="p">[</span><span class="n">class_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ymin</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">,</span> <span class="n">xmax</span><span class="p">))</span>
 
-                <span class="k">return</span> <span class="n">frame</span><span class="p">,</span> <span class="n">detected_objects</span></div></div>
+        <span class="c1"># Visualization of the results of a detection.</span>
+        <span class="n">vis_util</span><span class="o">.</span><span class="n">visualize_boxes_and_labels_on_image_array</span><span class="p">(</span>
+            <span class="n">frame</span><span class="p">,</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">boxes</span><span class="p">),</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">classes</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">scores</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">category_index</span><span class="p">,</span>
+            <span class="n">use_normalized_coordinates</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">line_thickness</span><span class="o">=</span><span class="mi">8</span>
+        <span class="p">)</span>
+        <span class="c1">################################</span>
+
+        <span class="k">return</span> <span class="n">frame</span><span class="p">,</span> <span class="n">detected_objects</span></div></div>
 </pre></div>
 
           </div>

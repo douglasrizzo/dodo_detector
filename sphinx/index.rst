@@ -10,8 +10,6 @@
    :caption: Contents:
 
    modules
-   tf_obj_tutorial/tf_obj_tutorial
-
 
 
 Indices and tables

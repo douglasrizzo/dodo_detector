@@ -52,9 +52,9 @@ Basically, the top-level directory will contain subdirectories. The name of each
 You can then use the methods provided by the detector to detect objects in your images, videos or camera feed.
 
 Single-shot detector [4]_
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This detector uses TensorFlow Object Detection API. In order to use it, you must either train your own neural network using their API, or provide a trained network. I have a concise :doc:`tutorial <tf_obj_tutorial/tf_obj_tutorial>` on how to train a neural network, with other useful links.
+This detector uses TensorFlow Object Detection API. In order to use it, you must either train your own neural network using their API, or provide a trained network. I have a concise `tutorial <https://gist.github.com/douglasrizzo/c70e186678f126f1b9005ca83d8bd2ce>`__ on how to train a neural network, with other useful links.
 
 The resultant training procedure will give you the *frozen inference graph*, which is a ``.pb`` file; and a *label map*, which is a text file with extension ``.pbtxt`` containing the names of your object classes.
 

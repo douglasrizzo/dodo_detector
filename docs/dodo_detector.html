@@ -137,7 +137,7 @@ and a dictionary listing objects and their locations as <cite>(ymin, xmin, ymax,
 
 <dl class="class">
 <dt id="dodo_detector.detection.SingleShotDetector">
-<em class="property">class </em><code class="descclassname">dodo_detector.detection.</code><code class="descname">SingleShotDetector</code><span class="sig-paren">(</span><em>path_to_frozen_graph</em>, <em>path_to_labels</em>, <em>num_classes</em>, <em>confidence=0.8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dodo_detector/detection.html#SingleShotDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dodo_detector.detection.SingleShotDetector" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">dodo_detector.detection.</code><code class="descname">SingleShotDetector</code><span class="sig-paren">(</span><em>path_to_frozen_graph</em>, <em>path_to_labels</em>, <em>num_classes=None</em>, <em>confidence=0.8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dodo_detector/detection.html#SingleShotDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dodo_detector.detection.SingleShotDetector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#dodo_detector.detection.ObjectDetector" title="dodo_detector.detection.ObjectDetector"><code class="xref py py-class docutils literal notranslate"><span class="pre">dodo_detector.detection.ObjectDetector</span></code></a></p>
 <p>Object detector powered by the TensorFlow Object Detection API.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -145,10 +145,10 @@ and a dictionary listing objects and their locations as <cite>(ymin, xmin, ymax,
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>path_to_frozen_graph</strong> – path to the frozen inference graph file, a file with a <cite>.pb</cite> extension</li>
-<li><strong>path_to_labels</strong> – path to the label map, a text file with the <cite>.pbtxt</cite> extension</li>
-<li><strong>num_classes</strong> – number of object classes that will be detected</li>
-<li><strong>confidence</strong> – a value between 0 and 1 representing the confidence level the network has in the detection to consider it an actual detection</li>
+<li><strong>path_to_frozen_graph</strong> – path to the frozen inference graph file, a file with a <cite>.pb</cite> extension.</li>
+<li><strong>path_to_labels</strong> – path to the label map, a text file with the <cite>.pbtxt</cite> extension.</li>
+<li><strong>num_classes</strong> – number of object classes that will be detected. If None, it will be guessed by the contents of the label map.</li>
+<li><strong>confidence</strong> – a value between 0 and 1 representing the confidence level the network has in the detection to consider it an actual detection.</li>
 </ul>
 </td>
 </tr>
