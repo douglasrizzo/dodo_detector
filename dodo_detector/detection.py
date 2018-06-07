@@ -297,8 +297,8 @@ class SingleShotDetector(ObjectDetector):
             raise ValueError("confidence must be between 0 and 1")
 
         # load (frozen) tensorflow model into memory
-        self.detection_graph = tf.Graph()
-        with self.detection_graph.as_default():
+        self._detection_graph = tf.Graph()
+        with self._detection_graph.as_default():
             od_graph_def = tf.GraphDef()
             with tf.gfile.GFile(path_to_frozen_graph, 'rb') as fid:
                 serialized_graph = fid.read()
@@ -321,61 +321,62 @@ class SingleShotDetector(ObjectDetector):
         self.category_index = label_map_util.create_category_index(self.categories)
         self.confidence = confidence
 
+        self._session = tf.Session(graph=self._detection_graph)
+
     def from_image(self, frame):
         # object recognition begins here
         height, width, z = frame.shape
-        with self.detection_graph.as_default():
-            with tf.Session(graph=self.detection_graph) as sess:
-                image_np_expanded = np.expand_dims(frame, axis=0)
-                image_tensor = self.detection_graph.get_tensor_by_name('image_tensor:0')
-                # Each box represents a part of the image where a particular object was detected.
-                boxes = self.detection_graph.get_tensor_by_name('detection_boxes:0')
-                # Each score represent how level of confidence for each of the objects.
-                # Score is shown on the result image, together with the class label.
-                scores = self.detection_graph.get_tensor_by_name('detection_scores:0')
-                classes = self.detection_graph.get_tensor_by_name('detection_classes:0')
-                num_detections = self.detection_graph.get_tensor_by_name('num_detections:0')
 
-                # Actual detection
-                (boxes, scores, classes, num_detections) = sess.run([boxes, scores, classes, num_detections], feed_dict={image_tensor: image_np_expanded})
+        image_np_expanded = np.expand_dims(frame, axis=0)
+        image_tensor = self._detection_graph.get_tensor_by_name('image_tensor:0')
+        # Each box represents a part of the image where a particular object was detected.
+        boxes = self._detection_graph.get_tensor_by_name('detection_boxes:0')
+        # Each score represent how level of confidence for each of the objects.
+        # Score is shown on the result image, together with the class label.
+        scores = self._detection_graph.get_tensor_by_name('detection_scores:0')
+        classes = self._detection_graph.get_tensor_by_name('detection_classes:0')
+        num_detections = self._detection_graph.get_tensor_by_name('num_detections:0')
 
-                detected_objects = {}
+        # Actual detection
+        (boxes, scores, classes, num_detections) = self._session.run([boxes, scores, classes, num_detections], feed_dict={image_tensor: image_np_expanded})
 
-                # for each detection
-                for x in range(scores.shape[0]):
-                    # scores are given in descending order,
-                    # so we only check the first one to see if it's
-                    # higher than the minimum confidence
-                    if scores[x, 0] < self.confidence:
-                        break
+        detected_objects = {}
 
-                    # capture the class of the detected object
-                    class_name = self.categories[int(classes[x][0]) - 1]['name']
+        # for each detection
+        for x in range(scores.shape[0]):
+            # scores are given in descending order,
+            # so we only check the first one to see if it's
+            # higher than the minimum confidence
+            if scores[x, 0] < self.confidence:
+                break
 
-                    # get the detection box around the object
-                    box_objects = boxes[x][0]
-                    # positions of the box are between 0 and 1, relative to the size of the image
-                    # we multiply them to get the box location in pixels
-                    ymin = int(box_objects[0] * height)
-                    xmin = int(box_objects[1] * width)
-                    ymax = int(box_objects[2] * height)
-                    xmax = int(box_objects[3] * width)
+            # capture the class of the detected object
+            class_name = self.categories[int(classes[x][0]) - 1]['name']
 
-                    if class_name not in detected_objects:
-                        detected_objects[class_name] = []
+            # get the detection box around the object
+            box_objects = boxes[x][0]
+            # positions of the box are between 0 and 1, relative to the size of the image
+            # we multiply them to get the box location in pixels
+            ymin = int(box_objects[0] * height)
+            xmin = int(box_objects[1] * width)
+            ymax = int(box_objects[2] * height)
+            xmax = int(box_objects[3] * width)
 
-                    detected_objects[class_name].append((ymin, xmin, ymax, xmax))
+            if class_name not in detected_objects:
+                detected_objects[class_name] = []
 
-                # Visualization of the results of a detection.
-                vis_util.visualize_boxes_and_labels_on_image_array(
-                    frame,
-                    np.squeeze(boxes),
-                    np.squeeze(classes).astype(np.int32),
-                    np.squeeze(scores),
-                    self.category_index,
-                    use_normalized_coordinates=True,
-                    line_thickness=8
-                )
-                ################################
+            detected_objects[class_name].append((ymin, xmin, ymax, xmax))
 
-                return frame, detected_objects
+        # Visualization of the results of a detection.
+        vis_util.visualize_boxes_and_labels_on_image_array(
+            frame,
+            np.squeeze(boxes),
+            np.squeeze(classes).astype(np.int32),
+            np.squeeze(scores),
+            self.category_index,
+            use_normalized_coordinates=True,
+            line_thickness=8
+        )
+        ################################
+
+        return frame, detected_objects
