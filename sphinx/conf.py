@@ -16,7 +16,6 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
-
 # -- Project information -----------------------------------------------------
 
 project = 'dodo detector'
@@ -27,7 +26,6 @@ author = 'Douglas De Rizzo Meneghetti'
 version = '0.2'
 # The full version, including alpha/beta/rc tags
 release = '0.2'
-
 
 # -- General configuration ---------------------------------------------------
 
@@ -77,7 +75,6 @@ exclude_patterns = []
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
 
-
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
@@ -106,12 +103,10 @@ html_static_path = ['_static']
 #
 # html_sidebars = {}
 
-
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'dododetectordoc'
-
 
 # -- Options for LaTeX output ------------------------------------------------
 
@@ -137,20 +132,14 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'dododetector.tex', 'dodo detector Documentation',
-     'Douglas De Rizzo Meneghetti', 'manual'),
+    (master_doc, 'dododetector.tex', 'dodo detector Documentation', 'Douglas De Rizzo Meneghetti', 'manual'),
 ]
-
 
 # -- Options for manual page output ------------------------------------------
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    (master_doc, 'dododetector', 'dodo detector Documentation',
-     [author], 1)
-]
-
+man_pages = [(master_doc, 'dododetector', 'dodo detector Documentation', [author], 1)]
 
 # -- Options for Texinfo output ----------------------------------------------
 
@@ -158,11 +147,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'dododetector', 'dodo detector Documentation',
-     author, 'dododetector', 'One line description of project.',
-     'Miscellaneous'),
+    (master_doc, 'dododetector', 'dodo detector Documentation', author, 'dododetector', 'One line description of project.', 'Miscellaneous'),
 ]
-
 
 # -- Extension configuration -------------------------------------------------
 
