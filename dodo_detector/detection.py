@@ -397,21 +397,21 @@ class SingleShotDetector(ObjectDetector):
 
         detected_objects = {}
 
-        # for each detection
-        for x in range(scores.shape[0]):
-            # scores are given in descending order,
-            # so we only check the first one to see if it's
-            # higher than the minimum confidence
-            if scores[x, 0] < self._confidence:
-                continue
+        # count how many scores are above the designated threshold
+        worthy_detections = sum(score >= self._confidence for score in scores[0])
+        # self._logger.debug('Found ' + str(worthy_detections) + ' objects')
+
+        # analyze all worthy detections
+        for x in range(worthy_detections):
 
             # capture the class of the detected object
-            class_name = self.categories[int(classes[x][0]) - 1]['name']
+            class_name = self.categories[int(classes[0][x]) - 1]['name']
 
             # get the detection box around the object
-            box_objects = boxes[x][0]
+            box_objects = boxes[0][x]
+
             # positions of the box are between 0 and 1, relative to the size of the image
-            # we multiply them to get the box location in pixels
+            # we multiply them by the size of the image to get the box location in pixels
             ymin = int(box_objects[0] * height)
             xmin = int(box_objects[1] * width)
             ymax = int(box_objects[2] * height)
