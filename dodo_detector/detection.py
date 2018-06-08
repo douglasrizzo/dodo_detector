@@ -19,7 +19,7 @@ class ObjectDetector():
     """
     __metaclass__ = ABCMeta
 
-    def __init__(self, logging):
+    def __init__(self):
         # create logger
         self._logger = logging.getLogger('dodo_detector')
         self._logger.setLevel(logging.DEBUG)
@@ -30,7 +30,7 @@ class ObjectDetector():
         self._ch = logging.StreamHandler()
         self._ch.setLevel(logging.DEBUG)
         # create formatter and add it to the handlers
-        self._formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        self._formatter = logging.Formatter('[%(asctime)s - %(name)s]: %(levelname)s: %(message)s')
         self._fh.setFormatter(self._formatter)
         self._ch.setFormatter(self._formatter)
         # add the handlers to the logger
@@ -176,8 +176,8 @@ class KeypointObjectDetector(ObjectDetector):
         for obj in self.objects:
             self.object_features[obj] = self._load_features(obj)
 
-    def __init__(self, database_path, detector_type='RootSIFT', matcher_type='BF', min_points=10,logging=False):
-        super(ObjectDetector, self).__init__(logging)
+    def __init__(self, database_path, detector_type='RootSIFT', matcher_type='BF', min_points=10, logging=False):
+        super().__init__()
 
         self.current_frame = 0
 
@@ -336,8 +336,8 @@ class SingleShotDetector(ObjectDetector):
     :param confidence: a value between 0 and 1 representing the confidence level the network has in the detection to consider it an actual detection.
     """
 
-    def __init__(self, path_to_frozen_graph, path_to_labels, num_classes=None, confidence=.8, logging=True):
-        super(ObjectDetector, self).__init__(logging)
+    def __init__(self, path_to_frozen_graph, path_to_labels, num_classes=None, confidence=.8):
+        super().__init__()
 
         if not 0 < confidence <= 1:
             raise ValueError("confidence must be between 0 and 1")
@@ -367,6 +367,7 @@ class SingleShotDetector(ObjectDetector):
         self.category_index = label_map_util.create_category_index(self.categories)
         self._confidence = confidence
 
+        # create a session that will be used until our detector is set on fire by the gc
         self._session = tf.Session(graph=self._detection_graph)
 
     @property
@@ -431,9 +432,5 @@ class SingleShotDetector(ObjectDetector):
             use_normalized_coordinates=True,
             line_thickness=8
         )
-        ################################
-
-        if self._logging:
-            self._logger.warn('Found '+str(num_detections)+' objects in '+str(len(detected_objects))+' classes')
 
         return frame, detected_objects
