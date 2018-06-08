@@ -402,7 +402,7 @@ class SingleShotDetector(ObjectDetector):
             # so we only check the first one to see if it's
             # higher than the minimum confidence
             if scores[x, 0] < self._confidence:
-                break
+                continue
 
             # capture the class of the detected object
             class_name = self.categories[int(classes[x][0]) - 1]['name']
