@@ -363,8 +363,13 @@ class SingleShotDetector(ObjectDetector):
             label_map_contents = open(path_to_labels, 'r').read()
             num_classes = label_map_contents.count('name:')
 
-        self.categories = label_map_util.convert_label_map_to_categories(label_map, max_num_classes=num_classes, use_display_name=True)
-        self.category_index = label_map_util.create_category_index(self.categories)
+        categories = label_map_util.convert_label_map_to_categories(label_map, max_num_classes=num_classes, use_display_name=True)
+        self._category_index = label_map_util.create_category_index(categories)
+
+        self._categories = {}
+        for tmp in categories:
+            self._categories[int(tmp['id'])] = tmp['name']
+
         self._confidence = confidence
 
         # create a session that will be used until our detector is set on fire by the gc
@@ -395,17 +400,17 @@ class SingleShotDetector(ObjectDetector):
         # Actual detection
         boxes, scores, classes, num_detections = self._session.run([boxes, scores, classes, num_detections], feed_dict={image_tensor: image_np_expanded})
 
-        detected_objects = {}
 
         # count how many scores are above the designated threshold
         worthy_detections = sum(score >= self._confidence for score in scores[0])
         # self._logger.debug('Found ' + str(worthy_detections) + ' objects')
 
+        detected_objects = {}
         # analyze all worthy detections
         for x in range(worthy_detections):
-
+            
             # capture the class of the detected object
-            class_name = self.categories[int(classes[0][x]) - 1]['name']
+            class_name = self._categories[int(classes[0][x])]
 
             # get the detection box around the object
             box_objects = boxes[0][x]
