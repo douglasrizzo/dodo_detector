@@ -153,6 +153,10 @@ class KeypointObjectDetector(ObjectDetector):
     def database_path(self):
         return self._database_path
 
+    @property
+    def categories(self):
+        return self._categories
+
     @database_path.setter
     def database_path(self, value):
         # get the directory where object textures are stored
@@ -161,19 +165,19 @@ class KeypointObjectDetector(ObjectDetector):
             self._database_path += '/'
         # store object classes in a list
         # each directory in the object database corresponds to a class
-        self.objects = [os.path.basename(d) for d in os.listdir(self._database_path)]
+        self._categories = [os.path.basename(d) for d in os.listdir(self._database_path)]
         # minimum object dimensions in pixels
         self.min_object_height = 10
         self.min_object_width = 10
         self.min_object_area = self.min_object_height * self.min_object_width
         # initialize the frame counter for each object class at 0
         self.object_counters = {}
-        for ob in self.objects:
+        for ob in self.categories:
             self.object_counters[ob] = 0
         # load features for each texture and store the image,
         # its keypoints and corresponding descriptor
         self.object_features = {}
-        for obj in self.objects:
+        for obj in self.categories:
             self.object_features[obj] = self._load_features(obj)
 
     def __init__(self, database_path, detector_type='RootSIFT', matcher_type='BF', min_points=10, logging=False):
@@ -367,8 +371,10 @@ class SingleShotDetector(ObjectDetector):
         self._category_index = label_map_util.create_category_index(categories)
 
         self._categories = {}
+        self._categories_public = []
         for tmp in categories:
             self._categories[int(tmp['id'])] = tmp['name']
+            self.categories.append(tmp['name'])
 
         self._confidence = confidence
 
@@ -378,6 +384,10 @@ class SingleShotDetector(ObjectDetector):
     @property
     def confidence(self):
         return self._confidence
+
+    @property
+    def categories(self):
+        return self._categories_public
 
     @confidence.setter
     def confidence(self, value):
