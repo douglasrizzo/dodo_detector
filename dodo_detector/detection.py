@@ -177,7 +177,7 @@ class KeypointObjectDetector(ObjectDetector):
             self.object_features[obj] = self._load_features(obj)
 
     def __init__(self, database_path, detector_type='RootSIFT', matcher_type='BF', min_points=10, logging=False):
-        super().__init__()
+        super(ObjectDetector).__init__()
 
         self.current_frame = 0
 
@@ -337,7 +337,7 @@ class SingleShotDetector(ObjectDetector):
     """
 
     def __init__(self, path_to_frozen_graph, path_to_labels, num_classes=None, confidence=.8):
-        super().__init__()
+        super(ObjectDetector, self).__init__()
 
         if not 0 < confidence <= 1:
             raise ValueError("confidence must be between 0 and 1")
