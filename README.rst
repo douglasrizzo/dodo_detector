@@ -6,8 +6,8 @@ This a Python package I made to make object detection easier. Besides the depend
 Since this package is not on PyPi, you can install it via ``pip`` like this:
 
 .. code-block:: sh
-
-   pip install git+https://github.com/douglasrizzo/dodo_detector.git
+    
+    pip install git+https://gitlab.com/douglasrizzo/dodo_detector.git
 
 How to use
 ----------
@@ -23,28 +23,28 @@ Since OpenCV has no implementation of RootSIFT, I stole `this one <https://www.p
 
 Example on running a keypoint-based detector:
 
-.. code-block:: ruby
+.. code-block:: python
 
-   from dodo_detector.detection import KeypointObjectDetector
-   KeypointObjectDetector('/path/to/my/database').from_camera(0)
+    from dodo_detector.detection import KeypointObjectDetector
+    KeypointObjectDetector('/path/to/my/database').from_camera(0)
 
 The database directory must have the following structure:
 
 ::
-   database_dir
-       beer_can
-           img1.jpg
-           img2.jpg
-           img3.jpg
-       milk_box
-           hauihu.jpg
-           172812.jpg
-           you_require_additional_pylons.jpg
-       chocolate_milk
-           .
-           .
-       .
-       .
+    database_dir
+        beer_can
+            img1.jpg
+            img2.jpg
+            img3.jpg
+        milk_box
+            hauihu.jpg
+            172812.jpg
+            you_require_additional_pylons.jpg
+        chocolate_milk
+            .
+            .
+        .
+        .
 
 Basically, the top-level directory will contain subdirectories. The name of each subdirectory is the class name the program will return during detection. Inside each subdirectory is a collection of image files, whose keypoints will be extracted by the ``KeypointObjectDetector`` during the object construction. The keypoints will then be kept in-memory while the object exists.
 
@@ -63,8 +63,8 @@ Example on running a single-shot detector:
 
 .. code-block:: python
 
-   from dodo_detector.detection import SingleShotDetector
-   SingleShotDetector('path/to/frozen/graph.pb', 'path/to/labels.pbtxt', 5).from_camera(0)
+    from dodo_detector.detection import SingleShotDetector
+    SingleShotDetector('path/to/frozen/graph.pb', 'path/to/labels.pbtxt', 5).from_camera(0)
 
 Have fun!
 
