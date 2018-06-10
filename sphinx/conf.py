@@ -22,10 +22,12 @@ project = 'dodo detector'
 copyright = '2018, Douglas De Rizzo Meneghetti'
 author = 'Douglas De Rizzo Meneghetti'
 
+from dodo_detector import __version__
+
 # The short X.Y version
-version = '0.2'
+version = __version__
 # The full version, including alpha/beta/rc tags
-release = '0.2'
+release = __version__
 
 # -- General configuration ---------------------------------------------------
 
@@ -80,7 +82,7 @@ pygments_style = 'sphinx'
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'nature'
+html_theme = 'sphinx_rtd_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
