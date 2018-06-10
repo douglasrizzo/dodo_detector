@@ -31,6 +31,7 @@ Example on running a keypoint-based detector:
 The database directory must have the following structure:
 
 ::
+
     database_dir
         beer_can
             img1.jpg
