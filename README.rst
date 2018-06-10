@@ -5,7 +5,7 @@ This a Python package I made to make object detection easier. Besides the depend
 
 Since this package is not on PyPi, you can install it via ``pip`` like this:
 
-::
+.. code-block:: sh
 
    pip install git+https://github.com/douglasrizzo/dodo_detector.git
 
@@ -23,7 +23,7 @@ Since OpenCV has no implementation of RootSIFT, I stole `this one <https://www.p
 
 Example on running a keypoint-based detector:
 
-::
+.. code-block:: ruby
 
    from dodo_detector.detection import KeypointObjectDetector
    KeypointObjectDetector('/path/to/my/database').from_camera(0)
@@ -31,7 +31,6 @@ Example on running a keypoint-based detector:
 The database directory must have the following structure:
 
 ::
-
    database_dir
        beer_can
            img1.jpg
@@ -62,7 +61,7 @@ When creating the single-shot detector, the path to the frozen inference graph a
 
 Example on running a single-shot detector:
 
-::
+.. code-block:: python
 
    from dodo_detector.detection import SingleShotDetector
    SingleShotDetector('path/to/frozen/graph.pb', 'path/to/labels.pbtxt', 5).from_camera(0)
