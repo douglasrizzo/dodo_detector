@@ -374,7 +374,7 @@ class SingleShotDetector(ObjectDetector):
         self._categories_public = []
         for tmp in categories:
             self._categories[int(tmp['id'])] = tmp['name']
-            self.categories.append(tmp['name'])
+            self._categories_public.append(tmp['name'])
 
         self._confidence = confidence
 
