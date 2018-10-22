@@ -181,7 +181,7 @@ class KeypointObjectDetector(ObjectDetector):
             self.object_features[obj] = self._load_features(obj)
 
     def __init__(self, database_path, detector_type='RootSIFT', matcher_type='BF', min_points=10, logging=False):
-        super(ObjectDetector).__init__()
+        super(ObjectDetector, self).__init__()
 
         self.current_frame = 0
 
