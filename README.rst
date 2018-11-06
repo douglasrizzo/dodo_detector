@@ -7,7 +7,7 @@ Since this package is not on PyPi, you can install it via ``pip`` like this:
 
 .. code-block:: sh
     
-    pip install git+https://gitlab.com/douglasrizzo/dodo_detector.git
+    pip install git+https://github.com/douglasrizzo/dodo_detector.git
 
 How to use
 ----------
