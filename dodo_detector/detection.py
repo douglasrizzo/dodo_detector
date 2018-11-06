@@ -410,7 +410,6 @@ class SingleShotDetector(ObjectDetector):
         # Actual detection
         boxes, scores, classes, num_detections = self._session.run([boxes, scores, classes, num_detections], feed_dict={image_tensor: image_np_expanded})
 
-
         # count how many scores are above the designated threshold
         worthy_detections = sum(score >= self._confidence for score in scores[0])
         # self._logger.debug('Found ' + str(worthy_detections) + ' objects')
@@ -418,7 +417,7 @@ class SingleShotDetector(ObjectDetector):
         detected_objects = {}
         # analyze all worthy detections
         for x in range(worthy_detections):
-            
+
             # capture the class of the detected object
             class_name = self._categories[int(classes[0][x])]
 
