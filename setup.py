@@ -22,6 +22,7 @@ setup(
     description='Object detection package',
     author='Douglas De Rizzo Meneghetti',
     author_email='douglasrizzom@gmail.com',
+    packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
     install_requires=['numpy', 'tqdm', 'imutils', 'opencv-python'],
     extras_require={
         'tf-cpu': [
