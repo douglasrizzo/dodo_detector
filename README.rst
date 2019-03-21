@@ -3,16 +3,40 @@ Dodo's object detection package
 
 This a Python package I made to make object detection easier. Besides the dependencies listed on ``setup.py``, it also depends on the `OpenCV 3 nonfree/contrib packages <https://github.com/opencv/opencv_contrib>`__, which include the SURF [1]_ and SIFT [2]_ keypoint detection algorithms, as well as the `TensorFlow Object Detection API <https://github.com/tensorflow/models/tree/master/research/object_detection>`__. The documentation over there teaches everything you need to know to install it.
 
-Since this package is not on PyPi, you can install it via ``pip`` like this:
+Since this package is not on PyPI, you can install it via ``pip`` like this:
 
 .. code-block:: sh
     
     pip install git+https://github.com/douglasrizzo/dodo_detector.git
 
-How to use
-----------
+TensorFlow is only a soft dependency of the package. If you want GPU support, install the ``tensorflow-gpu`` package. Otherwise, install ``tensorflow``. These soft dependencies can be installed like so:
 
-The package has two types of detector, a keypoint-based detector and an SSD detector, which uses MobileNet v1.
+.. code-block:: sh
+    
+    git clone https://github.com/douglasrizzo/dodo_detector.git
+    pip install dodo_detector[tf-cpu] # for CPU support
+    pip install dodo_detector[tf-gpu] # for GPU support
+
+OpenCV is a hard dependency and is installed via the PyPI ``opencv-python`` package. If you already have OpenCV installed (*e.g.* from source), edit *setup.py* and remove the hard dependency before installing.
+
+Quick start
+-----------
+
+The package has two types of detector, a keypoint-based detector and an detector based on pre-trained convolutional neural networks from the TensorFlow `model zoo <https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md>`__.
+
+All detectors have a common interface, with three methods:
+
+- ``from_camera`` takes a camera ID and uses OpenCV to read a frame stream, which is displayed on a separate window;
+- ``from_video`` receives a video file and also displays the detection results on a window;
+- ``from_image`` receives a single RGB image as a numpy array and returns a tuple containing an image with all the detected objects marked in it, and a dictionary containing object classes as keys and their bounding boxes in tuples. An example with one apple and two oranges detected in an image: ::
+
+    {
+        'apple': [[15,12,200,400]],
+        'orange': [
+            [27,42,215,450],
+            [112,117,600,542]
+            ]
+    }
 
 Keypoint-based detector
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -26,7 +50,8 @@ Example on running a keypoint-based detector:
 .. code-block:: python
 
     from dodo_detector.detection import KeypointObjectDetector
-    KeypointObjectDetector('/path/to/my/database').from_camera(0)
+    detector = KeypointObjectDetector('/path/to/my/database_dir')
+    marked_image, obj_dict = detector.from_image(im)
 
 The database directory must have the following structure:
 
@@ -51,8 +76,8 @@ Basically, the top-level directory will contain subdirectories. The name of each
 
 You can then use the methods provided by the detector to detect objects in your images, videos or camera feed.
 
-Single-shot detector [4]_
-~~~~~~~~~~~~~~~~~~~~~~~~~
+Convolutional neural network detector [4]_
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This detector uses TensorFlow Object Detection API. In order to use it, you must either train your own neural network using their API, or provide a trained network. I have a concise `tutorial <https://gist.github.com/douglasrizzo/c70e186678f126f1b9005ca83d8bd2ce>`__ on how to train a neural network, with other useful links.
 
@@ -65,7 +90,8 @@ Example on running a single-shot detector:
 .. code-block:: python
 
     from dodo_detector.detection import SingleShotDetector
-    SingleShotDetector('path/to/frozen/graph.pb', 'path/to/labels.pbtxt', 5).from_camera(0)
+    detector = SingleShotDetector('path/to/frozen/graph.pb', 'path/to/labels.pbtxt', 5)
+    marked_image, obj_dict = detector.from_image(im)
 
 Have fun!
 
