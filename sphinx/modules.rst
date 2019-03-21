@@ -1,5 +1,5 @@
-dodo_detector
-=============
+Package modules
+===============
 
 .. toctree::
    :maxdepth: 4

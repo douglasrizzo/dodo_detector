@@ -1,6 +1,3 @@
-dodo\_detector package
-======================
-
 dodo\_detector.detection module
 -------------------------------
 
