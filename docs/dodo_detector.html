@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>dodo_detector package &mdash; dodo detector 0.5 documentation</title>
+  <title>dodo_detector.detection module &mdash; dodo detector 0.5.3 documentation</title>
   
 
   
@@ -17,33 +17,35 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="dodo_detector" href="modules.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
+    <link rel="prev" title="Package modules" href="modules.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -57,7 +59,7 @@
             
             
               <div class="version">
-                0.5
+                0.5.3
               </div>
             
           
@@ -83,11 +85,8 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="modules.html">dodo_detector</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">dodo_detector package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#module-dodo_detector.detection">dodo_detector.detection module</a></li>
-</ul>
-</li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Package modules</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">dodo_detector.detection module</a></li>
 </ul>
 </li>
 </ul>
@@ -135,9 +134,9 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-          <li><a href="modules.html">dodo_detector</a> &raquo;</li>
+          <li><a href="modules.html">Package modules</a> &raquo;</li>
         
-      <li>dodo_detector package</li>
+      <li>dodo_detector.detection module</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -156,10 +155,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="dodo-detector-package">
-<h1>dodo_detector package<a class="headerlink" href="#dodo-detector-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-dodo_detector.detection">
-<span id="dodo-detector-detection-module"></span><h2>dodo_detector.detection module<a class="headerlink" href="#module-dodo_detector.detection" title="Permalink to this headline">¶</a></h2>
+  <div class="section" id="module-dodo_detector.detection">
+<span id="dodo-detector-detection-module"></span><h1>dodo_detector.detection module<a class="headerlink" href="#module-dodo_detector.detection" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="dodo_detector.detection.KeypointObjectDetector">
 <em class="property">class </em><code class="descclassname">dodo_detector.detection.</code><code class="descname">KeypointObjectDetector</code><span class="sig-paren">(</span><em>database_path</em>, <em>detector_type='RootSIFT'</em>, <em>matcher_type='BF'</em>, <em>min_points=10</em>, <em>logging=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dodo_detector/detection.html#KeypointObjectDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dodo_detector.detection.KeypointObjectDetector" title="Permalink to this definition">¶</a></dt>
@@ -222,7 +219,7 @@ and a dictionary listing objects and their locations as <cite>(ymin, xmin, ymax,
 <dl class="class">
 <dt id="dodo_detector.detection.ObjectDetector">
 <em class="property">class </em><code class="descclassname">dodo_detector.detection.</code><code class="descname">ObjectDetector</code><a class="reference internal" href="_modules/dodo_detector/detection.html#ObjectDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dodo_detector.detection.ObjectDetector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Base class for object detectors used by the package.</p>
 <dl class="method">
 <dt id="dodo_detector.detection.ObjectDetector.from_camera">
@@ -320,7 +317,6 @@ and a dictionary listing objects and their locations as <cite>(ymin, xmin, ymax,
 </dd></dl>
 
 </div>
-</div>
 
 
            </div>
@@ -331,7 +327,7 @@ and a dictionary listing objects and their locations as <cite>(ymin, xmin, ymax,
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
       
-        <a href="modules.html" class="btn btn-neutral" title="dodo_detector" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="modules.html" class="btn btn-neutral float-left" title="Package modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -340,7 +336,7 @@ and a dictionary listing objects and their locations as <cite>(ymin, xmin, ymax,
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Douglas De Rizzo Meneghetti.
+        &copy; Copyright 2018, Douglas De Rizzo Meneghetti
 
     </p>
   </div>
@@ -357,33 +353,16 @@ and a dictionary listing objects and their locations as <cite>(ymin, xmin, ymax,
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.5',
-            LANGUAGE:'en',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>
