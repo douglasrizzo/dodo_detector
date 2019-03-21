@@ -60,7 +60,7 @@ class ObjectDetector():
         while ret:
             marked_frame, objects = self.from_image(frame)
 
-            cv2.imshow("image", marked_frame)
+            cv2.imshow("detection", marked_frame)
             if cv2.waitKey(1) == 27:
                 break  # ESC to quit
 
