@@ -102,6 +102,17 @@ class ObjectDetector():
 
         self._detect_from_stream(get_frame, stream)
 
+    @staticmethod
+    def is_rgb(im):
+        return len(im.shape) == 3 and im.shape[2] == 3
+
+    @staticmethod
+    def to_rgb(im):
+        w, h = im.shape
+        ret = np.empty((w, h, 3), dtype=np.uint8)
+        ret[:, :, 2] = ret[:, :, 1] = ret[:, :, 0] = im
+        return ret
+
 
 class KeypointObjectDetector(ObjectDetector):
     """
@@ -395,6 +406,10 @@ class SingleShotDetector(ObjectDetector):
 
     def from_image(self, frame):
         # object recognition begins here
+
+        if not ObjectDetector.is_rgb(frame):
+            frame = ObjectDetector.to_rgb(frame)
+
         height, width, z = frame.shape
 
         image_np_expanded = np.expand_dims(frame, axis=0)
