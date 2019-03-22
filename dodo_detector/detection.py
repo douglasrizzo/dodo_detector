@@ -104,13 +104,13 @@ class ObjectDetector():
         self._detect_from_stream(get_frame, stream)
 
     @staticmethod
-    def __is_rgb(im):
+    def is_rgb(im):
         return len(im.shape) == 3 and im.shape[2] == 3
 
     @staticmethod
-    def __to_rgb(im):
+    def to_rgb(im):
         w, h = im.shape[0], im.shape[1]
-        
+
         ret = np.empty((w, h, 3), dtype=np.uint8)
         ret[:, :, 2] = ret[:, :, 1] = ret[:, :, 0] = im
         return ret
@@ -414,8 +414,8 @@ class SingleShotDetector(ObjectDetector):
     def from_image(self, frame):
         # object recognition begins here
 
-        if not ObjectDetector.__is_rgb(frame):
-            frame = ObjectDetector.__to_rgb(frame)
+        if not ObjectDetector.is_rgb(frame):
+            frame = ObjectDetector.to_rgb(frame)
 
         height, width, z = frame.shape
 
