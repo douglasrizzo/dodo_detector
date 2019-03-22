@@ -109,7 +109,8 @@ class ObjectDetector():
 
     @staticmethod
     def __to_rgb(im):
-        w, h = im.shape
+        w, h = im.shape[0], im.shape[1]
+        
         ret = np.empty((w, h, 3), dtype=np.uint8)
         ret[:, :, 2] = ret[:, :, 1] = ret[:, :, 0] = im
         return ret
