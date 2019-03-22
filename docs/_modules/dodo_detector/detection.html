@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>dodo_detector.detection &mdash; dodo detector 0.5.4 documentation</title>
+  <title>dodo_detector.detection &mdash; dodo detector 0.6 documentation</title>
   
 
   
@@ -17,32 +17,34 @@
   
 
   
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
-
-  
-  <script src="../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -56,7 +58,7 @@
             
             
               <div class="version">
-                0.5.4
+                0.6
               </div>
             
           
@@ -159,6 +161,7 @@
 <span class="kn">from</span> <span class="nn">object_detection.utils</span> <span class="k">import</span> <span class="n">label_map_util</span>
 <span class="kn">from</span> <span class="nn">object_detection.utils</span> <span class="k">import</span> <span class="n">visualization_utils</span> <span class="k">as</span> <span class="n">vis_util</span>
 <span class="kn">from</span> <span class="nn">imutils.video</span> <span class="k">import</span> <span class="n">WebcamVideoStream</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="k">import</span> <span class="n">warn</span>
 
 
 <div class="viewcode-block" id="ObjectDetector"><a class="viewcode-back" href="../../dodo_detector.html#dodo_detector.detection.ObjectDetector">[docs]</a><span class="k">class</span> <span class="nc">ObjectDetector</span><span class="p">():</span>
@@ -256,7 +259,8 @@
 
 <div class="viewcode-block" id="ObjectDetector.to_rgb"><a class="viewcode-back" href="../../dodo_detector.html#dodo_detector.detection.ObjectDetector.to_rgb">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">to_rgb</span><span class="p">(</span><span class="n">im</span><span class="p">):</span>
-        <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">im</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
         <span class="n">ret</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
         <span class="n">ret</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">ret</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">ret</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">im</span>
         <span class="k">return</span> <span class="n">ret</span></div></div>
@@ -478,7 +482,7 @@
                 <span class="k">if</span> <span class="n">object_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">detected_objects</span><span class="p">:</span>
                     <span class="n">detected_objects</span><span class="p">[</span><span class="n">object_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
-                <span class="n">detected_objects</span><span class="p">[</span><span class="n">object_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ymin</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">,</span> <span class="n">xmax</span><span class="p">))</span>
+                <span class="n">detected_objects</span><span class="p">[</span><span class="n">object_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;box&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">,</span> <span class="n">xmax</span><span class="p">)})</span>
 
                 <span class="n">text_point</span> <span class="o">=</span> <span class="p">(</span><span class="n">homography</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">homography</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
                 <span class="n">homography</span> <span class="o">=</span> <span class="n">homography</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
@@ -522,9 +526,14 @@
 
         <span class="c1"># this is a workaround to guess the number of classes by the contents of the label map</span>
         <span class="c1"># it may not be perfect</span>
+        <span class="n">label_map_contents</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path_to_labels</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">suggested_num_classes</span> <span class="o">=</span> <span class="n">label_map_contents</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;name:&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">num_classes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">label_map_contents</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path_to_labels</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-            <span class="n">num_classes</span> <span class="o">=</span> <span class="n">label_map_contents</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;name:&#39;</span><span class="p">)</span>
+            <span class="n">num_classes</span> <span class="o">=</span> <span class="n">suggested_num_classes</span>
+        <span class="k">elif</span> <span class="n">num_classes</span> <span class="o">!=</span> <span class="n">suggested_num_classes</span><span class="p">:</span>
+            <span class="c1"># a warning is generated in case the user passes a number of classes</span>
+            <span class="c1"># that is different than the label map contents</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Suggested number of classes according to label map is </span><span class="si">{0}</span><span class="s1">. Will use </span><span class="si">{1}</span><span class="s1"> as manually passed.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">suggested_num_classes</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">))</span>
 
         <span class="n">categories</span> <span class="o">=</span> <span class="n">label_map_util</span><span class="o">.</span><span class="n">convert_label_map_to_categories</span><span class="p">(</span><span class="n">label_map</span><span class="p">,</span> <span class="n">max_num_classes</span><span class="o">=</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">use_display_name</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_category_index</span> <span class="o">=</span> <span class="n">label_map_util</span><span class="o">.</span><span class="n">create_category_index</span><span class="p">(</span><span class="n">categories</span><span class="p">)</span>
@@ -597,7 +606,7 @@
             <span class="k">if</span> <span class="n">class_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">detected_objects</span><span class="p">:</span>
                 <span class="n">detected_objects</span><span class="p">[</span><span class="n">class_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
-            <span class="n">detected_objects</span><span class="p">[</span><span class="n">class_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ymin</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">,</span> <span class="n">xmax</span><span class="p">))</span>
+            <span class="n">detected_objects</span><span class="p">[</span><span class="n">class_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;box&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">,</span> <span class="n">xmax</span><span class="p">),</span> <span class="s1">&#39;confidence&#39;</span><span class="p">:</span> <span class="n">scores</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">x</span><span class="p">]})</span>
 
         <span class="c1"># Visualization of the results of a detection.</span>
         <span class="n">vis_util</span><span class="o">.</span><span class="n">visualize_boxes_and_labels_on_image_array</span><span class="p">(</span>
@@ -624,7 +633,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Douglas De Rizzo Meneghetti
+        &copy; Copyright 2019, Douglas De Rizzo Meneghetti
 
     </p>
   </div>
@@ -641,25 +650,16 @@
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

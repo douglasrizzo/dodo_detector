@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Dodo’s object detection package &mdash; dodo detector 0.5.4 documentation</title>
+  <title>Dodo’s object detection package &mdash; dodo detector 0.6 documentation</title>
   
 
   
@@ -17,33 +17,35 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Package modules" href="modules.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -57,7 +59,7 @@
             
             
               <div class="version">
-                0.5.4
+                0.6
               </div>
             
           
@@ -171,14 +173,18 @@ pip install dodo_detector<span class="o">[</span>tf-gpu<span class="o">]</span> 
 </li>
 <li><p class="first"><code class="docutils literal notranslate"><span class="pre">from_video</span></code> receives a video file and also displays the detection results on a window;</p>
 </li>
-<li><p class="first"><code class="docutils literal notranslate"><span class="pre">from_image</span></code> receives a single RGB image as a numpy array and returns a tuple containing an image with all the detected objects marked in it, and a dictionary containing object classes as keys and their bounding boxes in tuples. An example with one apple and two oranges detected in an image:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s1">&#39;apple&#39;</span><span class="p">:</span> <span class="p">[[</span><span class="mi">15</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">200</span><span class="p">,</span><span class="mi">400</span><span class="p">]],</span>
-    <span class="s1">&#39;orange&#39;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">[</span><span class="mi">27</span><span class="p">,</span><span class="mi">42</span><span class="p">,</span><span class="mi">215</span><span class="p">,</span><span class="mi">450</span><span class="p">],</span>
-        <span class="p">[</span><span class="mi">112</span><span class="p">,</span><span class="mi">117</span><span class="p">,</span><span class="mi">600</span><span class="p">,</span><span class="mi">542</span><span class="p">]</span>
-        <span class="p">]</span>
-<span class="p">}</span>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">from_image</span></code> receives a single RGB image as a numpy array and returns a tuple containing an image with all the detected objects marked in it, and a dictionary containing object classes as keys and their detection information in tuples. Some classifiers return only bounding boxes, others return an additional confidence level. An example with one apple and two oranges detected in an image:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;person&#39;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s1">&#39;box&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">204</span><span class="p">,</span> <span class="mi">456</span><span class="p">,</span> <span class="mi">377</span><span class="p">,</span> <span class="mi">534</span><span class="p">),</span> <span class="s1">&#39;confidence&#39;</span><span class="p">:</span> <span class="mf">0.9989906</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;box&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">182</span><span class="p">,</span> <span class="mi">283</span><span class="p">,</span> <span class="mi">370</span><span class="p">,</span> <span class="mi">383</span><span class="p">),</span> <span class="s1">&#39;confidence&#39;</span><span class="p">:</span> <span class="mf">0.99848276</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;box&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">181</span><span class="p">,</span> <span class="mi">222</span><span class="p">,</span> <span class="mi">368</span><span class="p">,</span> <span class="mi">282</span><span class="p">),</span> <span class="s1">&#39;confidence&#39;</span><span class="p">:</span> <span class="mf">0.9979938</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;box&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">184</span><span class="p">,</span> <span class="mi">37</span><span class="p">,</span> <span class="mi">379</span><span class="p">,</span> <span class="mi">109</span><span class="p">),</span> <span class="s1">&#39;confidence&#39;</span><span class="p">:</span> <span class="mf">0.9938652</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;box&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">169</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">371</span><span class="p">,</span> <span class="mi">66</span><span class="p">),</span> <span class="s1">&#39;confidence&#39;</span><span class="p">:</span> <span class="mf">0.98873794</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;box&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">199</span><span class="p">,</span> <span class="mi">397</span><span class="p">,</span> <span class="mi">371</span><span class="p">,</span> <span class="mi">440</span><span class="p">),</span> <span class="s1">&#39;confidence&#39;</span><span class="p">:</span> <span class="mf">0.96926546</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;box&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">197</span><span class="p">,</span> <span class="mi">108</span><span class="p">,</span> <span class="mi">365</span><span class="p">,</span> <span class="mi">191</span><span class="p">),</span> <span class="s1">&#39;confidence&#39;</span><span class="p">:</span> <span class="mf">0.96739936</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;box&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">184</span><span class="p">,</span> <span class="mi">363</span><span class="p">,</span> <span class="mi">377</span><span class="p">,</span> <span class="mi">414</span><span class="p">),</span> <span class="s1">&#39;confidence&#39;</span><span class="p">:</span> <span class="mf">0.945458</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;box&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">195</span><span class="p">,</span> <span class="mi">144</span><span class="p">,</span> <span class="mi">363</span><span class="p">,</span> <span class="mi">195</span><span class="p">),</span> <span class="s1">&#39;confidence&#39;</span><span class="p">:</span> <span class="mf">0.92953676</span><span class="p">}</span>
+<span class="p">]}</span>
 </pre></div>
 </div>
 </li>
@@ -296,7 +302,7 @@ pip install dodo_detector<span class="o">[</span>tf-gpu<span class="o">]</span> 
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Douglas De Rizzo Meneghetti
+        &copy; Copyright 2019, Douglas De Rizzo Meneghetti
 
     </p>
   </div>
@@ -313,25 +319,16 @@ pip install dodo_detector<span class="o">[</span>tf-gpu<span class="o">]</span> 
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>
