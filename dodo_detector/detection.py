@@ -332,7 +332,7 @@ class KeypointObjectDetector(ObjectDetector):
                 if object_name not in detected_objects:
                     detected_objects[object_name] = []
 
-                detected_objects[object_name].append((ymin, xmin, ymax, xmax))
+                detected_objects[object_name].append({'box': (ymin, xmin, ymax, xmax)})
 
                 text_point = (homography[0][0], homography[1][1])
                 homography = homography.reshape((-1, 1, 2))
@@ -456,7 +456,7 @@ class SingleShotDetector(ObjectDetector):
             if class_name not in detected_objects:
                 detected_objects[class_name] = []
 
-            detected_objects[class_name].append((ymin, xmin, ymax, xmax))
+            detected_objects[class_name].append({'box': (ymin, xmin, ymax, xmax), 'confidence': scores[0][x]})
 
         # Visualization of the results of a detection.
         vis_util.visualize_boxes_and_labels_on_image_array(

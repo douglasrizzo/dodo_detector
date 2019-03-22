@@ -28,15 +28,19 @@ All detectors have a common interface, with three methods:
 
 - ``from_camera`` takes a camera ID and uses OpenCV to read a frame stream, which is displayed on a separate window;
 - ``from_video`` receives a video file and also displays the detection results on a window;
-- ``from_image`` receives a single RGB image as a numpy array and returns a tuple containing an image with all the detected objects marked in it, and a dictionary containing object classes as keys and their bounding boxes in tuples. An example with one apple and two oranges detected in an image: ::
+- ``from_image`` receives a single RGB image as a numpy array and returns a tuple containing an image with all the detected objects marked in it, and a dictionary containing object classes as keys and their detection information in tuples. Some classifiers return only bounding boxes, others return an additional confidence level. An example with one apple and two oranges detected in an image: ::
 
-    {
-        'apple': [[15,12,200,400]],
-        'orange': [
-            [27,42,215,450],
-            [112,117,600,542]
-            ]
-    }
+    {'person': [
+        {'box': (204, 456, 377, 534), 'confidence': 0.9989906},
+        {'box': (182, 283, 370, 383), 'confidence': 0.99848276},
+        {'box': (181, 222, 368, 282), 'confidence': 0.9979938},
+        {'box': (184, 37, 379, 109), 'confidence': 0.9938652},
+        {'box': (169, 0, 371, 66), 'confidence': 0.98873794},
+        {'box': (199, 397, 371, 440), 'confidence': 0.96926546},
+        {'box': (197, 108, 365, 191), 'confidence': 0.96739936},
+        {'box': (184, 363, 377, 414), 'confidence': 0.945458},
+        {'box': (195, 144, 363, 195), 'confidence': 0.92953676}
+    ]}
 
 Keypoint-based detector
 ~~~~~~~~~~~~~~~~~~~~~~~
