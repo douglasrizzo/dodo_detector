@@ -11,6 +11,7 @@ from abc import ABCMeta, abstractmethod
 from object_detection.utils import label_map_util
 from object_detection.utils import visualization_utils as vis_util
 from imutils.video import WebcamVideoStream
+from warnings import warn
 
 
 class ObjectDetector():
@@ -374,9 +375,14 @@ class SingleShotDetector(ObjectDetector):
 
         # this is a workaround to guess the number of classes by the contents of the label map
         # it may not be perfect
+        label_map_contents = open(path_to_labels, 'r').read()
+        suggested_num_classes = label_map_contents.count('name:')
         if num_classes is None:
-            label_map_contents = open(path_to_labels, 'r').read()
-            num_classes = label_map_contents.count('name:')
+            num_classes = suggested_num_classes
+        elif num_classes != suggested_num_classes:
+            # a warning is generated in case the user passes a number of classes
+            # that is different than the label map contents
+            warn('Suggested number of classes according to label map is {0}. Will use {1} as manually passed.'.format(suggested_num_classes, num_classes))
 
         categories = label_map_util.convert_label_map_to_categories(label_map, max_num_classes=num_classes, use_display_name=True)
         self._category_index = label_map_util.create_category_index(categories)
