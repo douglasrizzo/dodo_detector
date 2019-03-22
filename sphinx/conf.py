@@ -19,9 +19,11 @@
 # -- Project information -----------------------------------------------------
 
 project = 'dodo detector'
-copyright = '2018, Douglas De Rizzo Meneghetti'
+copyright = '2019, Douglas De Rizzo Meneghetti'
 author = 'Douglas De Rizzo Meneghetti'
 
+# unfortunately, can't mention the package as ., so if there is an installed
+# version this will get the version of the installed package
 from dodo_detector import __version__
 
 # The short X.Y version
