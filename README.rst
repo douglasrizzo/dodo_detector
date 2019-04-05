@@ -1,7 +1,21 @@
 Dodo's object detection package
 ===============================
 
-This a Python package I made to make object detection easier. Besides the dependencies listed on ``setup.py``, it also depends on the `OpenCV 3 nonfree/contrib packages <https://github.com/opencv/opencv_contrib>`__, which include the SURF [1]_ and SIFT [2]_ keypoint detection algorithms, as well as the `TensorFlow Object Detection API <https://github.com/tensorflow/models/tree/master/research/object_detection>`__. The documentation over there teaches everything you need to know to install it.
+This is a package that implements two types of object detection algorithms and provides them as objects ready to be instantiated and used. The first algorithm uses a pipeline which consists of OpenCV keypoint detection and description algorithms, followed by feature matching and positioning using homography. Basically, `this tutorial <https://docs.opencv.org/3.4.1/d1/de0/tutorial_py_feature_homography.html>`__.
+
+The second one uses a pre-trained network from the `TensorFlow Object Detection API <https://github.com/tensorflow/models/tree/master/research/object_detection>`__. Basically, `this tutorial <https://github.com/tensorflow/models/blob/master/research/object_detection/object_detection_tutorial.ipynb>`__.
+
+As of now, the package works with both Python 2.7 and Python 3.
+
+Why
+---
+
+I have been working with object detection for quite some time now. After having to reimplement some methods, which are available online, but most times in a very convoluted way, I decided to create a Python package to make things easier not only for me, but for others.
+
+Installation
+------------
+
+Besides the dependencies listed on ``setup.py``, it also depends on the `OpenCV 3 nonfree/contrib packages <https://github.com/opencv/opencv_contrib>`__, which include the SURF [1]_ and SIFT [2]_ keypoint detection algorithms, as well as the `TensorFlow Object Detection API <https://github.com/tensorflow/models/tree/master/research/object_detection>`__. The documentation over there teaches everything you need to know to install it.
 
 Since this package is not on PyPI, you can install it via ``pip`` like this:
 
@@ -19,8 +33,8 @@ TensorFlow is only a soft dependency of the package. If you want GPU support, in
 
 OpenCV is a hard dependency and is installed via the PyPI ``opencv-python`` package. If you already have OpenCV installed (*e.g.* from source), edit *setup.py* and remove the hard dependency before installing.
 
-Quick start
------------
+Usage
+-----
 
 The package has two types of detector, a keypoint-based detector and an detector based on pre-trained convolutional neural networks from the TensorFlow `model zoo <https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md>`__.
 
