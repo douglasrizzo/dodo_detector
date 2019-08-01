@@ -3,7 +3,7 @@ Dodo's object detection package
 
 This is a package that implements two types of object detection algorithms and provides them as Python classes, ready to be instantiated and used. The first algorithm uses a pipeline which consists of OpenCV keypoint detection and description algorithms, followed by feature matching and positioning using homography. Basically, `this tutorial <https://docs.opencv.org/3.4.1/d1/de0/tutorial_py_feature_homography.html>`__.
 
-The second one uses a pre-trained network from the `TensorFlow Object Detection API <https://github.com/tensorflow/models/tree/master/research/object_detection>`__. Basically, `this tutorial <https://github.com/tensorflow/models/blob/master/research/object_detection/object_detection_tutorial.ipynb>`__.
+The second one uses any pre-trained convolutional network from the `TensorFlow Object Detection API <https://github.com/tensorflow/models/tree/master/research/object_detection>`__. Basically, `this tutorial <https://github.com/tensorflow/models/blob/master/research/object_detection/object_detection_tutorial.ipynb>`__.
 
 As of now, the package works with both Python 2.7 and Python 3.
 
