@@ -1,5 +1,5 @@
 tests:
-	pip install .[testing]
+	pip install .[tf-cpu,testing]
 
 ifneq '$USER' 'travis'
 	nosetests -s --cover-package=dodo_detector --processes=$(nproc)
