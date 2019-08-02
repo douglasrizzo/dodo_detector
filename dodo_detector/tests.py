@@ -47,8 +47,11 @@ class TheOnlyTestCase(unittest.TestCase):
             if not exists(self.__tarname) or not isfile(self.__tarname):
                 self.__pbar = None
                 urlretrieve('http://download.tensorflow.org/models/object_detection/' + self.__model + '.tar.gz', self.__tarname, self.download_progress_hook)
+            
             tar = tarfile.open(self.__tarname)
-            tar.extractall()
+            for t in tar: 
+                if 'frozen_inference_graph.pb' in t.name: 
+                    tar.extract(t) 
             tar.close()
 
     def maybe_download_image_dataset(self):
