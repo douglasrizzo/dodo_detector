@@ -5,17 +5,16 @@ from dodo_detector import __version__
 
 setup(
     classifiers=[
-        # How mature is this project? Common values are
-        #   3 - Alpha
-        #   4 - Beta
-        #   5 - Production/Stable
         'Development Status :: 4 - Beta',
-        'Intended Audience :: Education',
         'Intended Audience :: Science/Research',
         'Natural Language :: English',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
-        'Topic :: Education :: Testing',
-        'License :: OSI Approved :: GNU General Public License v3 (LGPLv3)'
+        'Programming Language :: Python :: 3.7',
+        'Topic :: Scientific/Engineering :: Artificial Intelligence',
+        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)'
     ],
     name='dodo_detector',
     version=__version__,
