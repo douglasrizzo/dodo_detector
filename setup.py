@@ -30,7 +30,7 @@ setup(
         'tf-gpu': [
             'tensorflow-gpu',
         ],
-        'testing': ['nose'],
+        'testing': ['nose', 'pillow', 'matplotlib'],
         'docs': ['Sphinx', 'numpydoc', 'sphinx_autodoc_annotation', 'sphinx_rtd_theme']
     },
     license='GPLv3'
