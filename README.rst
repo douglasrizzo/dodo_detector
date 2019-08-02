@@ -5,7 +5,7 @@ This is a package that implements two types of object detection algorithms and p
 
 The second one uses a pre-trained network from the `TensorFlow Object Detection API <https://github.com/tensorflow/models/tree/master/research/object_detection>`__. Basically, `this tutorial <https://github.com/tensorflow/models/blob/master/research/object_detection/object_detection_tutorial.ipynb>`__.
 
-As of now, the package works with both Python 2.7 and Python 3.
+As of now, the package works with both Python 2.7 and Python 3, but the tests work only on Python 3 because the code to download datasets is different between Python versions and I'm lazy.
 
 Why
 ---
