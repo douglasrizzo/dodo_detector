@@ -10,10 +10,10 @@ def get_dist(pkgname):
     except DistributionNotFound:
         return None
 
-install_deps = ['numpy', 'tqdm', 'imutils', 'opencv-python', 'tensorflow>=1.13, <=1.15']
+install_deps = ['numpy', 'tqdm', 'imutils', 'opencv-python', 'tensorflow>=1.13, <=1.15.2']
 if get_dist('tensorflow') is None and get_dist('tensorflow-gpu') is not None:
     del install_deps[-1]
-    install_deps.append('tensorflow-gpu>=1.13, <=1.15')
+    install_deps.append('tensorflow-gpu>=1.13, <=1.15.2')
 
 setup(
     classifiers=[

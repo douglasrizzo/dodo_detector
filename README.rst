@@ -25,9 +25,9 @@ Since this package is not on PyPI, you can install it via ``pip`` like this:
 
 .. note::
 
-    Please note that The TensorFlow Object Detection API does not yet support TensorFlow 2. This package has successfully been tested (up until 2020-21-02) with ``tensorflow>=1.13, <=1.15`` and ``tensorflow-gpu>=1.13, <=1.15``.
+    Please note that The TensorFlow Object Detection API does not yet support TensorFlow 2. This package has successfully been tested (up until 2020-21-02) with ``tensorflow>=1.13, <=1.15.2`` and ``tensorflow-gpu>=1.13, <=1.15.2``.
     
-    The installation process detects if ``tensorflow-gpu`` is already installed. If not, it will install ``tensorflow>=1.13, <=1.15`` (without GPU support). If you want GPU support, make sure ``tensorflow`` is not installed and install ``tensorflow-gpu>=1.13, <=1.15`` yourself.
+    The installation process detects if ``tensorflow-gpu`` is already installed. If not, it will install ``tensorflow>=1.13, <=1.15.2`` (without GPU support). If you want GPU support, make sure ``tensorflow`` is not installed and install ``tensorflow-gpu>=1.13, <=1.15.2`` yourself.
 
 OpenCV is a hard dependency and is installed via the PyPI ``opencv-python`` package. If you already have OpenCV installed (*e.g.* from source), edit *setup.py* and remove the hard dependency before installing.
 
