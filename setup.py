@@ -1,7 +1,19 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 from setuptools import setup, find_packages
 from dodo_detector import __version__
+from pkg_resources import DistributionNotFound, get_distribution
+
+def get_dist(pkgname):
+    try:
+        return get_distribution(pkgname)
+    except DistributionNotFound:
+        return None
+
+install_deps = ['numpy', 'tqdm', 'imutils', 'opencv-python', 'tensorflow>=1.13, <=1.15']
+if get_dist('tensorflow') is None and get_dist('tensorflow-gpu') is not None:
+    del install_deps[-1]
+    install_deps.append('tensorflow-gpu>=1.13, <=1.15')
 
 setup(
     classifiers=[
@@ -21,14 +33,8 @@ setup(
     author='Douglas De Rizzo Meneghetti',
     author_email='douglasrizzom@gmail.com',
     packages=find_packages(exclude=['contrib', 'docs']),
-    install_requires=['numpy', 'tqdm', 'imutils', 'opencv-python'],
+    install_requires=install_deps,
     extras_require={
-        'tf-cpu': [
-            'tensorflow',
-        ],
-        'tf-gpu': [
-            'tensorflow-gpu',
-        ],
         'testing': ['nose', 'pillow', 'matplotlib'],
         'docs': ['Sphinx', 'numpydoc', 'sphinx_autodoc_annotation', 'sphinx_rtd_theme']
     },
