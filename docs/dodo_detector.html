@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>dodo_detector.detection module &mdash; dodo detector 0.6 documentation</title>
+  <title>dodo_detector.detection module &mdash; dodo detector 0.6.1 documentation</title>
   
 
   
@@ -17,33 +17,35 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="prev" title="Package modules" href="modules.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -57,7 +59,7 @@
             
             
               <div class="version">
-                0.6
+                0.6.1
               </div>
             
           
@@ -157,169 +159,149 @@
 <span id="dodo-detector-detection-module"></span><h1>dodo_detector.detection module<a class="headerlink" href="#module-dodo_detector.detection" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="dodo_detector.detection.KeypointObjectDetector">
-<em class="property">class </em><code class="descclassname">dodo_detector.detection.</code><code class="descname">KeypointObjectDetector</code><span class="sig-paren">(</span><em>database_path</em>, <em>detector_type='RootSIFT'</em>, <em>matcher_type='BF'</em>, <em>min_points=10</em>, <em>logging=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dodo_detector/detection.html#KeypointObjectDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dodo_detector.detection.KeypointObjectDetector" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">dodo_detector.detection.</code><code class="sig-name descname">KeypointObjectDetector</code><span class="sig-paren">(</span><em class="sig-param">database_path</em>, <em class="sig-param">detector_type='RootSIFT'</em>, <em class="sig-param">matcher_type='BF'</em>, <em class="sig-param">min_points=10</em>, <em class="sig-param">logging=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dodo_detector/detection.html#KeypointObjectDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dodo_detector.detection.KeypointObjectDetector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#dodo_detector.detection.ObjectDetector" title="dodo_detector.detection.ObjectDetector"><code class="xref py py-class docutils literal notranslate"><span class="pre">dodo_detector.detection.ObjectDetector</span></code></a></p>
 <p>Object detector based on keypoints. This class depends on OpenCV SIFT and SURF feature detection algorithms,
 as well as the brute-force and FLANN-based feature matchers.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>database_path</strong> – Path to the top-level directory containing subdirectories, each subdirectory named after a class of objects and containing images of that object.</li>
-<li><strong>detector_type</strong> – either <cite>SURF</cite>, <cite>SIFT</cite> or <cite>RootSIFT</cite></li>
-<li><strong>matcher_type</strong> – either <cite>BF</cite> for brute-force matcher or <cite>FLANN</cite> for flann-based matcher</li>
-<li><strong>min_points</strong> – minimum number of keypoints necessary for an object to be considered detected in an image</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>database_path</strong> – Path to the top-level directory containing subdirectories, each subdirectory named after a class of objects and containing images of that object.</p></li>
+<li><p><strong>detector_type</strong> – either <cite>SURF</cite>, <cite>SIFT</cite> or <cite>RootSIFT</cite></p></li>
+<li><p><strong>matcher_type</strong> – either <cite>BF</cite> for brute-force matcher or <cite>FLANN</cite> for flann-based matcher</p></li>
+<li><p><strong>min_points</strong> – minimum number of keypoints necessary for an object to be considered detected in an image</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="attribute">
+</dd>
+</dl>
+<dl class="method">
 <dt id="dodo_detector.detection.KeypointObjectDetector.categories">
-<code class="descname">categories</code><a class="headerlink" href="#dodo_detector.detection.KeypointObjectDetector.categories" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">categories</code><a class="headerlink" href="#dodo_detector.detection.KeypointObjectDetector.categories" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="dodo_detector.detection.KeypointObjectDetector.database_path">
-<code class="descname">database_path</code><a class="headerlink" href="#dodo_detector.detection.KeypointObjectDetector.database_path" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">database_path</code><a class="headerlink" href="#dodo_detector.detection.KeypointObjectDetector.database_path" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="dodo_detector.detection.KeypointObjectDetector.detector_type">
-<code class="descname">detector_type</code><a class="headerlink" href="#dodo_detector.detection.KeypointObjectDetector.detector_type" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">detector_type</code><a class="headerlink" href="#dodo_detector.detection.KeypointObjectDetector.detector_type" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="dodo_detector.detection.KeypointObjectDetector.from_image">
-<code class="descname">from_image</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dodo_detector/detection.html#KeypointObjectDetector.from_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dodo_detector.detection.KeypointObjectDetector.from_image" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">from_image</code><span class="sig-paren">(</span><em class="sig-param">frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dodo_detector/detection.html#KeypointObjectDetector.from_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dodo_detector.detection.KeypointObjectDetector.from_image" title="Permalink to this definition">¶</a></dt>
 <dd><p>Detects objects in an image</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> – a numpy.ndarray containing the image where objects will be detected</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a tuple containing the image, with objects marked by rectangles,
-and a dictionary listing objects and their locations as <cite>(ymin, xmin, ymax, xmax)</cite></td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>frame</strong> – a numpy.ndarray containing the image where objects will be detected</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a tuple containing the image, with objects marked by rectangles,
+and a dictionary listing objects and their locations as <cite>(ymin, xmin, ymax, xmax)</cite></p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="dodo_detector.detection.KeypointObjectDetector.matcher_type">
-<code class="descname">matcher_type</code><a class="headerlink" href="#dodo_detector.detection.KeypointObjectDetector.matcher_type" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">matcher_type</code><a class="headerlink" href="#dodo_detector.detection.KeypointObjectDetector.matcher_type" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="dodo_detector.detection.ObjectDetector">
-<em class="property">class </em><code class="descclassname">dodo_detector.detection.</code><code class="descname">ObjectDetector</code><a class="reference internal" href="_modules/dodo_detector/detection.html#ObjectDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dodo_detector.detection.ObjectDetector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<em class="property">class </em><code class="sig-prename descclassname">dodo_detector.detection.</code><code class="sig-name descname">ObjectDetector</code><a class="reference internal" href="_modules/dodo_detector/detection.html#ObjectDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dodo_detector.detection.ObjectDetector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Base class for object detectors used by the package.</p>
 <dl class="method">
 <dt id="dodo_detector.detection.ObjectDetector.from_camera">
-<code class="descname">from_camera</code><span class="sig-paren">(</span><em>camera_id=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dodo_detector/detection.html#ObjectDetector.from_camera"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dodo_detector.detection.ObjectDetector.from_camera" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">from_camera</code><span class="sig-paren">(</span><em class="sig-param">camera_id=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dodo_detector/detection.html#ObjectDetector.from_camera"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dodo_detector.detection.ObjectDetector.from_camera" title="Permalink to this definition">¶</a></dt>
 <dd><p>Detects objects in frames from a camera feed</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>camera_id</strong> – the ID of the camera in the system</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>camera_id</strong> – the ID of the camera in the system</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="dodo_detector.detection.ObjectDetector.from_image">
-<code class="descname">from_image</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dodo_detector/detection.html#ObjectDetector.from_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dodo_detector.detection.ObjectDetector.from_image" title="Permalink to this definition">¶</a></dt>
+<em class="property">abstract </em><code class="sig-name descname">from_image</code><span class="sig-paren">(</span><em class="sig-param">frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dodo_detector/detection.html#ObjectDetector.from_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dodo_detector.detection.ObjectDetector.from_image" title="Permalink to this definition">¶</a></dt>
 <dd><p>Detects objects in an image</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> – a numpy.ndarray containing the image where objects will be detected</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a tuple containing the image, with objects marked by rectangles,
-and a dictionary listing objects and their locations as <cite>(ymin, xmin, ymax, xmax)</cite></td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>frame</strong> – a numpy.ndarray containing the image where objects will be detected</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a tuple containing the image, with objects marked by rectangles,
+and a dictionary listing objects and their locations as <cite>(ymin, xmin, ymax, xmax)</cite></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="dodo_detector.detection.ObjectDetector.from_video">
-<code class="descname">from_video</code><span class="sig-paren">(</span><em>filepath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dodo_detector/detection.html#ObjectDetector.from_video"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dodo_detector.detection.ObjectDetector.from_video" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">from_video</code><span class="sig-paren">(</span><em class="sig-param">filepath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dodo_detector/detection.html#ObjectDetector.from_video"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dodo_detector.detection.ObjectDetector.from_video" title="Permalink to this definition">¶</a></dt>
 <dd><p>Detects objects in frames from a video file</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filepath</strong> – the path to the video file</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filepath</strong> – the path to the video file</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="dodo_detector.detection.ObjectDetector.is_rgb">
-<em class="property">static </em><code class="descname">is_rgb</code><span class="sig-paren">(</span><em>im</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dodo_detector/detection.html#ObjectDetector.is_rgb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dodo_detector.detection.ObjectDetector.is_rgb" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">is_rgb</code><span class="sig-paren">(</span><em class="sig-param">im</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dodo_detector/detection.html#ObjectDetector.is_rgb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dodo_detector.detection.ObjectDetector.is_rgb" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="staticmethod">
+<dl class="method">
 <dt id="dodo_detector.detection.ObjectDetector.to_rgb">
-<em class="property">static </em><code class="descname">to_rgb</code><span class="sig-paren">(</span><em>im</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dodo_detector/detection.html#ObjectDetector.to_rgb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dodo_detector.detection.ObjectDetector.to_rgb" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">to_rgb</code><span class="sig-paren">(</span><em class="sig-param">im</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dodo_detector/detection.html#ObjectDetector.to_rgb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dodo_detector.detection.ObjectDetector.to_rgb" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="dodo_detector.detection.SingleShotDetector">
-<em class="property">class </em><code class="descclassname">dodo_detector.detection.</code><code class="descname">SingleShotDetector</code><span class="sig-paren">(</span><em>path_to_frozen_graph</em>, <em>path_to_labels</em>, <em>num_classes=None</em>, <em>confidence=0.8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dodo_detector/detection.html#SingleShotDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dodo_detector.detection.SingleShotDetector" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">dodo_detector.detection.</code><code class="sig-name descname">SingleShotDetector</code><span class="sig-paren">(</span><em class="sig-param">path_to_frozen_graph</em>, <em class="sig-param">path_to_labels</em>, <em class="sig-param">num_classes=None</em>, <em class="sig-param">confidence=0.8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dodo_detector/detection.html#SingleShotDetector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dodo_detector.detection.SingleShotDetector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#dodo_detector.detection.ObjectDetector" title="dodo_detector.detection.ObjectDetector"><code class="xref py py-class docutils literal notranslate"><span class="pre">dodo_detector.detection.ObjectDetector</span></code></a></p>
 <p>Object detector powered by the TensorFlow Object Detection API.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>path_to_frozen_graph</strong> – path to the frozen inference graph file, a file with a <cite>.pb</cite> extension.</li>
-<li><strong>path_to_labels</strong> – path to the label map, a text file with the <cite>.pbtxt</cite> extension.</li>
-<li><strong>num_classes</strong> – number of object classes that will be detected. If None, it will be guessed by the contents of the label map.</li>
-<li><strong>confidence</strong> – a value between 0 and 1 representing the confidence level the network has in the detection to consider it an actual detection.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path_to_frozen_graph</strong> – path to the frozen inference graph file, a file with a <cite>.pb</cite> extension.</p></li>
+<li><p><strong>path_to_labels</strong> – path to the label map, a text file with the <cite>.pbtxt</cite> extension.</p></li>
+<li><p><strong>num_classes</strong> – number of object classes that will be detected. If None, it will be guessed by the contents of the label map.</p></li>
+<li><p><strong>confidence</strong> – a value between 0 and 1 representing the confidence level the network has in the detection to consider it an actual detection.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="attribute">
+</dd>
+</dl>
+<dl class="method">
 <dt id="dodo_detector.detection.SingleShotDetector.categories">
-<code class="descname">categories</code><a class="headerlink" href="#dodo_detector.detection.SingleShotDetector.categories" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">categories</code><a class="headerlink" href="#dodo_detector.detection.SingleShotDetector.categories" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="dodo_detector.detection.SingleShotDetector.confidence">
-<code class="descname">confidence</code><a class="headerlink" href="#dodo_detector.detection.SingleShotDetector.confidence" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">confidence</code><a class="headerlink" href="#dodo_detector.detection.SingleShotDetector.confidence" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="dodo_detector.detection.SingleShotDetector.from_image">
-<code class="descname">from_image</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dodo_detector/detection.html#SingleShotDetector.from_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dodo_detector.detection.SingleShotDetector.from_image" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">from_image</code><span class="sig-paren">(</span><em class="sig-param">frame</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dodo_detector/detection.html#SingleShotDetector.from_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dodo_detector.detection.SingleShotDetector.from_image" title="Permalink to this definition">¶</a></dt>
 <dd><p>Detects objects in an image</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> – a numpy.ndarray containing the image where objects will be detected</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a tuple containing the image, with objects marked by rectangles,
-and a dictionary listing objects and their locations as <cite>(ymin, xmin, ymax, xmax)</cite></td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>frame</strong> – a numpy.ndarray containing the image where objects will be detected</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a tuple containing the image, with objects marked by rectangles,
+and a dictionary listing objects and their locations as <cite>(ymin, xmin, ymax, xmax)</cite></p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -335,7 +317,7 @@ and a dictionary listing objects and their locations as <cite>(ymin, xmin, ymax,
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
       
-        <a href="modules.html" class="btn btn-neutral" title="Package modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="modules.html" class="btn btn-neutral float-left" title="Package modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -361,25 +343,16 @@ and a dictionary listing objects and their locations as <cite>(ymin, xmin, ymax,
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>
