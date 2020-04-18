@@ -5,17 +5,29 @@ This is a package that implements two types of object detection algorithms and p
 
 The second one uses any pre-trained convolutional network from the `TensorFlow Object Detection API <https://github.com/tensorflow/models/tree/master/research/object_detection>`__. Basically, `this tutorial <https://github.com/tensorflow/models/blob/master/research/object_detection/object_detection_tutorial.ipynb>`__.
 
-As of now, the package works with both Python 2.7 and Python 3, but the tests work only on Python 3 because the code to download datasets is different between Python versions and I'm lazy.
+As of now, the package works with both Python 2.7 and Python 3 (however, the package is only `unit tested <https://github.com/douglasrizzo/dodo_detector/blob/master/dodo_detector/tests.py>`__ against Python 3).
 
 Why
 ---
 
-I have been working with object detection for quite some time now. After having to reimplement some detection algorithms, which are available online, but most times in a very convoluted way, I decided to create a Python package to make things easier not only for me, but for others.
+After having to follow the same computer vision tutorials to implement object detection every time I needed it for a project, I decided I had enough and created this Python package with detection methods I often use, ready to be used out of the box. I hope this makes things easier not only for me, but for others.
+
+Dependencies
+------------
+
+Besides the dependencies listed on ``setup.py``, the package also depends on:
+
+- `OpenCV 3 nonfree/contrib packages <https://github.com/opencv/opencv_contrib>`__, which include the SURF [1]_ and SIFT [2]_ keypoint detection algorithms
+- `TensorFlow Object Detection API <https://github.com/tensorflow/models/tree/master/research/object_detection>`__
+
+Follow their respective documentation pages to install them.
+
+.. note::
+
+    There is an ``opencv-contrib`` package available on PyPI, but I have never tried installing it instead of the doing the aforementioned process.
 
 Installation
 ------------
-
-Besides the dependencies listed on ``setup.py``, the package also depends on the `OpenCV 3 nonfree/contrib packages <https://github.com/opencv/opencv_contrib>`__, which include the SURF [1]_ and SIFT [2]_ keypoint detection algorithms, as well as the `TensorFlow Object Detection API <https://github.com/tensorflow/models/tree/master/research/object_detection>`__. Follow their respective documentation pages to install them.
 
 Since this package is not on PyPI, you can install it via ``pip`` like this:
 
@@ -25,7 +37,7 @@ Since this package is not on PyPI, you can install it via ``pip`` like this:
 
 .. note::
 
-    Please note that The TensorFlow Object Detection API does not yet support TensorFlow 2. This package has successfully been tested (up until 2020-21-02) with ``tensorflow>=1.13, <=1.15.2`` and ``tensorflow-gpu>=1.13, <=1.15.2``.
+    Please note that The TensorFlow Object Detection API does not yet support TensorFlow 2. This package has successfully been tested (on 2020-21-02) with ``tensorflow>=1.13, <=1.15.2`` and ``tensorflow-gpu>=1.13, <=1.15.2``.
     
     The installation process detects if ``tensorflow-gpu`` is already installed. If not, it will install ``tensorflow>=1.13, <=1.15.2`` (without GPU support). If you want GPU support, make sure ``tensorflow`` is not installed and install ``tensorflow-gpu>=1.13, <=1.15.2`` yourself.
 
@@ -101,7 +113,7 @@ The training procedure will give you the *frozen inference graph*, which is a ``
 
 This type of detector must be pointed towards the paths for the frozen inference graph and label map. The number of classes can be explicitly passed, or else classes will be counted from the contents of the label map.
 
-Example on running a single-shot detector:
+Example on running a detector that uses the TensorFlow Object Detection API:
 
 .. code-block:: python
 
