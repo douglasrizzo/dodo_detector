@@ -24,7 +24,7 @@ Follow their respective documentation pages to install them.
 
 .. note::
 
-    There is an ``opencv-contrib`` package available on PyPI, but I have never tried installing it instead of the doing the aforementioned process.
+    There is an ``opencv-contrib`` package available on PyPI, but I have never tried installing it instead of doing the aforementioned process.
 
 Installation
 ------------
@@ -37,7 +37,7 @@ Since this package is not on PyPI, you can install it via ``pip`` like this:
 
 .. note::
 
-    Please note that The TensorFlow Object Detection API does not yet support TensorFlow 2. This package has successfully been tested (on 2020-21-02) with ``tensorflow>=1.13, <=1.15.2`` and ``tensorflow-gpu>=1.13, <=1.15.2``.
+    Please note that The TensorFlow Object Detection API does not yet support TensorFlow 2. This package has successfully been tested (on 2020-02-21) with ``tensorflow>=1.13, <=1.15.2`` and ``tensorflow-gpu>=1.13, <=1.15.2``.
     
     The installation process detects if ``tensorflow-gpu`` is already installed. If not, it will install ``tensorflow>=1.13, <=1.15.2`` (without GPU support). If you want GPU support, make sure ``tensorflow`` is not installed and install ``tensorflow-gpu>=1.13, <=1.15.2`` yourself.
 
