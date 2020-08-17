@@ -12,6 +12,7 @@ from object_detection.utils import label_map_util
 from object_detection.utils import visualization_utils as vis_util
 from imutils.video import WebcamVideoStream
 from warnings import warn
+from datetime import datetime, timedelta
 
 
 class ObjectDetector():
@@ -58,9 +59,14 @@ class ObjectDetector():
         """
         ret, frame = get_frame(stream)
 
+        images = 0
+        elapsed_time = timedelta()
         while ret:
+            start_time = datetime.now()
             marked_frame, objects = self.from_image(frame)
+            elapsed_time += datetime.now() - start_time
 
+            images += 1
             cv2.imshow("detection", marked_frame)
             if cv2.waitKey(1) == 27:
                 break  # ESC to quit
@@ -68,6 +74,8 @@ class ObjectDetector():
             ret, frame = get_frame(stream)
 
         cv2.destroyAllWindows()
+
+        print('Average FPS: {}'.format(images / elapsed_time.total_seconds()))
 
     def from_camera(self, camera_id=0):
         """
