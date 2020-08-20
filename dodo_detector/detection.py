@@ -355,65 +355,26 @@ class SingleShotDetector(ObjectDetector):
     """
     Object detector powered by the TensorFlow Object Detection API.
 
-    :param path_to_frozen_graph: path to the frozen inference graph file, a file with a `.pb` extension.
+    :param model_dir: path to the directory containing the `saved_model.pb` file from the export procedure.
     :param path_to_labels: path to the label map, a text file with the `.pbtxt` extension.
     :param num_classes: number of object classes that will be detected. If None, it will be guessed by the contents of the label map.
     :param confidence: a value between 0 and 1 representing the confidence level the network has in the detection to consider it an actual detection.
     """
 
-    def __init__(self, path_to_frozen_graph, path_to_labels, num_classes=None, confidence=.8):
+    def __init__(self, model_dir, path_to_labels, num_classes=None, confidence=.8):
         super(ObjectDetector, self).__init__()
 
         if not 0 < confidence <= 1:
             raise ValueError("confidence must be between 0 and 1")
 
         # load (frozen) tensorflow model into memory
-        self._detection_graph = tf.Graph()
-        with self._detection_graph.as_default():
-            od_graph_def = tf.GraphDef()
-            with tf.gfile.GFile(path_to_frozen_graph, 'rb') as fid:
-                serialized_graph = fid.read()
-                od_graph_def.ParseFromString(serialized_graph)
-                tf.import_graph_def(od_graph_def, name='')
-
-        # Label maps map indices to category names, so that when our convolution
-        # network predicts 5, we know that this corresponds to airplane.
-        # Here we use internal utility functions, but anything that returns a
-        # dictionary mapping integers to appropriate string labels would be fine
-        label_map = label_map_util.load_labelmap(path_to_labels)
-
-        # this is a workaround to guess the number of classes by the contents of the label map
-        # it may not be perfect
-        label_map_contents = open(path_to_labels, 'r').read()
-        suggested_num_classes = label_map_contents.count('name:')
-        if num_classes is None:
-            num_classes = suggested_num_classes
-        elif num_classes != suggested_num_classes:
-            # a warning is generated in case the user passes a number of classes
-            # that is different than the label map contents
-            warn('Suggested number of classes according to label map is {0}. Will use {1} as manually passed.'.format(suggested_num_classes, num_classes))
-
-        categories = label_map_util.convert_label_map_to_categories(label_map, max_num_classes=num_classes, use_display_name=True)
-        self._category_index = label_map_util.create_category_index(categories)
-
-        self._categories = {}
-        self._categories_public = []
-        for tmp in categories:
-            self._categories[int(tmp['id'])] = tmp['name']
-            self._categories_public.append(tmp['name'])
-
-        self._confidence = confidence
-
-        # create a session that will be used until our detector is set on fire by the gc
-        self._session = tf.Session(graph=self._detection_graph)
+        self._detection_graph = tf.saved_model.load(str(model_dir))
+        # self._detection_graph = tf.saved_model.load(str(model_dir))
+        self._category_index = label_map_util.create_category_index_from_labelmap(path_to_labels, use_display_name=True)
 
     @property
     def confidence(self):
         return self._confidence
-
-    @property
-    def categories(self):
-        return self._categories_public
 
     @confidence.setter
     def confidence(self, value):
@@ -421,61 +382,47 @@ class SingleShotDetector(ObjectDetector):
 
     def from_image(self, frame):
         # object recognition begins here
+        # The input needs to be a tensor, convert it using `tf.convert_to_tensor`.
+        input_tensor = tf.convert_to_tensor(frame)
 
-        if not ObjectDetector.is_rgb(frame):
-            frame = ObjectDetector.to_rgb(frame)
+        if input_tensor.ndim == 2:
+            input_tensor = tf.tile(tf.expand_dims(input_tensor, axis=0), [3, 1, 1])
+        # The model expects a batch of images, so add an axis with `tf.newaxis`.
+        input_tensor = input_tensor[tf.newaxis, ...]
 
-        height, width, z = frame.shape
+        # Run inference
+        model_fn = self._detection_graph.signatures['serving_default']
+        output_dict = model_fn(input_tensor)
 
-        image_np_expanded = np.expand_dims(frame, axis=0)
-        image_tensor = self._detection_graph.get_tensor_by_name('image_tensor:0')
-        # Each box represents a part of the image where a particular object was detected.
-        boxes = self._detection_graph.get_tensor_by_name('detection_boxes:0')
-        # Each score represent how level of confidence for each of the objects.
-        # Score is shown on the result image, together with the class label.
-        scores = self._detection_graph.get_tensor_by_name('detection_scores:0')
-        classes = self._detection_graph.get_tensor_by_name('detection_classes:0')
-        num_detections = self._detection_graph.get_tensor_by_name('num_detections:0')
+        # All outputs are batches tensors.
+        # Convert to numpy arrays, and take index [0] to remove the batch dimension.
+        # We're only interested in the first num_detections.
+        num_detections = int(output_dict.pop('num_detections'))
+        output_dict = {key: value[0, :num_detections].numpy() for key, value in output_dict.items()}
+        output_dict['num_detections'] = num_detections
 
-        # Actual detection
-        boxes, scores, classes, num_detections = self._session.run([boxes, scores, classes, num_detections], feed_dict={image_tensor: image_np_expanded})
+        # detection_classes should be ints.
+        output_dict['detection_classes'] = output_dict['detection_classes'].astype(np.int64)
 
-        # count how many scores are above the designated threshold
-        worthy_detections = sum(score >= self._confidence for score in scores[0])
-        # self._logger.debug('Found ' + str(worthy_detections) + ' objects')
-
-        detected_objects = {}
-        # analyze all worthy detections
-        for x in range(worthy_detections):
-
-            # capture the class of the detected object
-            class_name = self._categories[int(classes[0][x])]
-
-            # get the detection box around the object
-            box_objects = boxes[0][x]
-
-            # positions of the box are between 0 and 1, relative to the size of the image
-            # we multiply them by the size of the image to get the box location in pixels
-            ymin = int(box_objects[0] * height)
-            xmin = int(box_objects[1] * width)
-            ymax = int(box_objects[2] * height)
-            xmax = int(box_objects[3] * width)
-
-            if class_name not in detected_objects:
-                detected_objects[class_name] = []
-
-            detected_objects[class_name].append({'box': (ymin, xmin, ymax, xmax), 'confidence': scores[0][x]})
+        # Handle models with masks:
+        if 'detection_masks' in output_dict:
+            # Reframe the the bbox mask to the image size.
+            detection_masks_reframed = utils_ops.reframe_box_masks_to_image_masks(
+                output_dict['detection_masks'], output_dict['detection_boxes'], image.shape[0], image.shape[1]
+            )
+            detection_masks_reframed = tf.cast(detection_masks_reframed > 0.5, tf.uint8)
+            output_dict['detection_masks_reframed'] = detection_masks_reframed.numpy()
 
         # Visualization of the results of a detection.
         vis_util.visualize_boxes_and_labels_on_image_array(
             frame,
-            np.squeeze(boxes),
-            np.squeeze(classes).astype(np.int32),
-            np.squeeze(scores),
+            output_dict['detection_boxes'],
+            output_dict['detection_classes'],
+            output_dict['detection_scores'],
             self._category_index,
+            instance_masks=output_dict.get('detection_masks_reframed', None),
             use_normalized_coordinates=True,
-            line_thickness=8,
-            min_score_thresh=self._confidence
+            line_thickness=8
         )
 
-        return frame, detected_objects
+        return frame, output_dict
