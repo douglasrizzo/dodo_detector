@@ -67,13 +67,13 @@ class ObjectDetector():
             elapsed_time += datetime.now() - start_time
 
             images += 1
-            cv2.imshow("detection", marked_frame)
-            if cv2.waitKey(1) == 27:
-                break  # ESC to quit
+            # cv2.imshow("detection", marked_frame)
+            # if cv2.waitKey(1) == 27:
+            #     break  # ESC to quit
 
             ret, frame = get_frame(stream)
 
-        cv2.destroyAllWindows()
+        # cv2.destroyAllWindows()
 
         print('Average FPS: {}'.format(images / elapsed_time.total_seconds()))
 
