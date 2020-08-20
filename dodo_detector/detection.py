@@ -361,7 +361,7 @@ class TFObjectDetector(ObjectDetector):
     :param confidence: a value between 0 and 1 representing the confidence level the network has in the detection to consider it an actual detection.
     """
 
-    def __init__(self, model_dir, path_to_labels, num_classes=None, confidence=.8):
+    def __init__(self, model_dir, path_to_labels, confidence=.8):
         super(ObjectDetector, self).__init__()
 
         if not 0 < confidence <= 1:
@@ -371,10 +371,24 @@ class TFObjectDetector(ObjectDetector):
         self._detection_graph = tf.saved_model.load(str(model_dir))
         # self._detection_graph = tf.saved_model.load(str(model_dir))
         self._category_index = label_map_util.create_category_index_from_labelmap(path_to_labels, use_display_name=True)
+        print('category index', self._category_index)
+
+        self._categories = {}
+        self._categories_public = []
+
+        for key in self._category_index:
+            self._categories[self._category_index[key]['id']] = self._category_index[key]['name']
+            self._categories_public.append(self._category_index[key]['name'])
+
+        self._confidence = confidence
 
     @property
     def confidence(self):
         return self._confidence
+
+    @property
+    def categories(self):
+        return self._categories_public
 
     @confidence.setter
     def confidence(self, value):
@@ -404,11 +418,39 @@ class TFObjectDetector(ObjectDetector):
         # detection_classes should be ints.
         output_dict['detection_classes'] = output_dict['detection_classes'].astype(np.int64)
 
+        # count how many scores are above the designated threshold
+        worthy_detections = sum(score >= self._confidence for score in output_dict['detection_scores'])
+
+        detected_objects = {}
+        # analyze all worthy detections
+        for x in range(worthy_detections):
+
+            # capture the class of the detected object
+            class_name = self._categories[int(output_dict['detection_classes'][x])]
+
+            # get the detection box around the object
+            box_objects = output_dict['detection_boxes'][x]
+
+            print(output_dict['detection_boxes'])
+
+            # positions of the box are between 0 and 1, relative to the size of the image
+            # we multiply them by the size of the image to get the box location in pixels
+            print(input_tensor.shape)
+            ymin = int(box_objects[0] * input_tensor.shape[1])
+            xmin = int(box_objects[1] * input_tensor.shape[2])
+            ymax = int(box_objects[2] * input_tensor.shape[1])
+            xmax = int(box_objects[3] * input_tensor.shape[2])
+
+            if class_name not in detected_objects:
+                detected_objects[class_name] = []
+
+            detected_objects[class_name].append({'box': (ymin, xmin, ymax, xmax), 'confidence': output_dict['detection_scores'][x]})
+
         # Handle models with masks:
         if 'detection_masks' in output_dict:
             # Reframe the the bbox mask to the image size.
             detection_masks_reframed = utils_ops.reframe_box_masks_to_image_masks(
-                output_dict['detection_masks'], output_dict['detection_boxes'], image.shape[0], image.shape[1]
+                output_dict['detection_masks'], output_dict['detection_boxes'], input_tensor.shape[3], input_tensor.shape[2]
             )
             detection_masks_reframed = tf.cast(detection_masks_reframed > 0.5, tf.uint8)
             output_dict['detection_masks_reframed'] = detection_masks_reframed.numpy()
@@ -425,4 +467,4 @@ class TFObjectDetector(ObjectDetector):
             line_thickness=8
         )
 
-        return frame, output_dict
+        return frame, detected_objects
