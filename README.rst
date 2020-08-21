@@ -3,9 +3,9 @@ Dodo's object detection package
 
 This is a package that implements two types of object detection algorithms and provides them as Python classes, ready to be instantiated and used. The first algorithm uses a pipeline which consists of OpenCV keypoint detection and description algorithms, followed by feature matching and positioning using homography. Basically, `this tutorial <https://docs.opencv.org/3.4.1/d1/de0/tutorial_py_feature_homography.html>`__.
 
-The second one uses any pre-trained convolutional network from the `TensorFlow Object Detection API <https://github.com/tensorflow/models/tree/master/research/object_detection>`__. Basically, `this tutorial <https://github.com/tensorflow/models/blob/master/research/object_detection/object_detection_tutorial.ipynb>`__.
+The second one uses any pre-trained convolutional network from the `TensorFlow Object Detection API <https://github.com/tensorflow/models/tree/master/research/object_detection>`__. Basically, `this tutorial <https://github.com/tensorflow/models/blob/master/research/object_detection/colab_tutorials/object_detection_tutorial.ipynb>`__.
 
-As of now, the package works with both Python 2.7 and Python 3 (however, the package is only `unit tested <https://github.com/douglasrizzo/dodo_detector/blob/master/dodo_detector/tests.py>`__ against Python 3).
+As of version 0.7 of the package, only Python 3 and TensorFlow 2 are supported.
 
 Why
 ---
@@ -35,18 +35,12 @@ Since this package is not on PyPI, you can install it via ``pip`` like this:
     
     pip install git+https://github.com/douglasrizzo/dodo_detector.git
 
-.. note::
-
-    Please note that The TensorFlow Object Detection API does not yet support TensorFlow 2. This package has successfully been tested (on 2020-02-21) with ``tensorflow>=1.13, <=1.15.2`` and ``tensorflow-gpu>=1.13, <=1.15.2``.
-    
-    The installation process detects if ``tensorflow-gpu`` is already installed. If not, it will install ``tensorflow>=1.13, <=1.15.2`` (without GPU support). If you want GPU support, make sure ``tensorflow`` is not installed and install ``tensorflow-gpu>=1.13, <=1.15.2`` yourself.
-
 OpenCV is a hard dependency and is installed via the PyPI ``opencv-python`` package. If you already have OpenCV installed (*e.g.* from source), edit *setup.py* and remove the hard dependency before installing.
 
 Usage
 -----
 
-The package has two types of detector, a keypoint-based detector and a detector based on pre-trained convolutional neural networks from the TensorFlow `model zoo <https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md>`__.
+The package has two types of detector, a keypoint-based detector and a detector that uses convolutional neural networks from the TensorFlow object detection API.
 
 All detectors have a common interface, with three methods:
 
@@ -107,18 +101,18 @@ You can then use the methods provided by the detector to detect objects in your 
 Convolutional neural network detector [4]_
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This detector uses TensorFlow Object Detection API. In order to use it, you must either train your own neural network using their API, or provide a trained network. I have a concise `tutorial <https://gist.github.com/douglasrizzo/c70e186678f126f1b9005ca83d8bd2ce>`__ on how to train a neural network, with other useful links.
+This detector uses the TensorFlow Object Detection API. In order to use it, you must either train your own neural network using their API, or provide a trained network. I have a concise `tutorial <https://gist.github.com/douglasrizzo/c70e186678f126f1b9005ca83d8bd2ce>`__ on how to train a neural network, with other useful links.
 
-The training procedure will give you the *frozen inference graph*, which is a ``.pb`` file; and a *label map*, which is a text file with extension ``.pbtxt`` containing the names of your object classes.
+After training and exporting a model using the TFODAPI, a directory called ``saved_model`` will be created, whose contents are used by *dodo_detector* to load the model into memory. Another file that is needed is the *label map*, which is a text file with extension ``.pbtxt`` containing the names of your object classes.
 
-This type of detector must be pointed towards the paths for the frozen inference graph and label map. The number of classes can be explicitly passed, or else classes will be counted from the contents of the label map.
+This type of detector must be pointed towards the paths of the ``saved_model`` directory and label map. The number of classes is inferred from the contents of the label map.
 
 Example on running a detector that uses the TensorFlow Object Detection API:
 
 .. code-block:: python
 
-    from dodo_detector.detection import SingleShotDetector
-    detector = SingleShotDetector('path/to/frozen/graph.pb', 'path/to/labels.pbtxt', 5)
+    from dodo_detector.detection import TFObjectDetector
+    detector = TFObjectDetector('path/to/frozen/saved_model', 'path/to/labels.pbtxt', 5)
     marked_image, obj_dict = detector.from_image(im)
 
 Have fun!

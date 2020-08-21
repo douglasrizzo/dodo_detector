@@ -19,7 +19,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'dodo detector'
-copyright = '2019, Douglas De Rizzo Meneghetti'
+copyright = '2020, Douglas De Rizzo Meneghetti'
 author = 'Douglas De Rizzo Meneghetti'
 
 # unfortunately, can't mention the package as ., so if there is an installed

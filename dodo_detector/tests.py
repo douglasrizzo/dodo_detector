@@ -10,7 +10,7 @@ from os import listdir, remove
 from PIL import Image
 from tqdm import tqdm
 from os.path import isdir, exists, isfile
-from dodo_detector.detection import SingleShotDetector
+from dodo_detector.detection import TFObjectDetector
 
 
 class TheOnlyTestCase(unittest.TestCase):
@@ -71,7 +71,7 @@ class TheOnlyTestCase(unittest.TestCase):
 
     def test_singleshotdetector(self):
         # create detector
-        detector = SingleShotDetector(self.__model + '/frozen_inference_graph.pb', self.__labelmap)
+        detector = TFObjectDetector(self.__model + '/saved_model', self.__labelmap)
 
         # load image locations into list
         ims = [self.__imagedir + '/' + im for im in listdir(self.__imagedir)]

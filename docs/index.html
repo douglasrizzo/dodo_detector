@@ -1,38 +1,39 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Dodo’s object detection package &mdash; dodo detector 0.6.1 documentation</title>
+  <title>Dodo’s object detection package &mdash; dodo detector 0.7 documentation</title>
   
-
-  
-  
-  
-  
-
-  
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
 
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Package modules" href="modules.html" /> 
@@ -49,7 +50,7 @@
           
 
           
-            <a href="#" class="icon icon-home"> dodo detector
+            <a href="#" class="icon icon-home" alt="Documentation Home"> dodo detector
           
 
           
@@ -59,7 +60,7 @@
             
             
               <div class="version">
-                0.6.1
+                0.7
               </div>
             
           
@@ -76,6 +77,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -91,6 +93,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -129,7 +132,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="#">Docs</a> &raquo;</li>
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
         
       <li>Dodo’s object detection package</li>
     
@@ -153,29 +156,36 @@
   <div class="section" id="dodo-s-object-detection-package">
 <h1>Dodo’s object detection package<a class="headerlink" href="#dodo-s-object-detection-package" title="Permalink to this headline">¶</a></h1>
 <p>This is a package that implements two types of object detection algorithms and provides them as Python classes, ready to be instantiated and used. The first algorithm uses a pipeline which consists of OpenCV keypoint detection and description algorithms, followed by feature matching and positioning using homography. Basically, <a class="reference external" href="https://docs.opencv.org/3.4.1/d1/de0/tutorial_py_feature_homography.html">this tutorial</a>.</p>
-<p>The second one uses any pre-trained convolutional network from the <a class="reference external" href="https://github.com/tensorflow/models/tree/master/research/object_detection">TensorFlow Object Detection API</a>. Basically, <a class="reference external" href="https://github.com/tensorflow/models/blob/master/research/object_detection/object_detection_tutorial.ipynb">this tutorial</a>.</p>
-<p>As of now, the package works with both Python 2.7 and Python 3, but the tests work only on Python 3 because the code to download datasets is different between Python versions and I’m lazy.</p>
+<p>The second one uses any pre-trained convolutional network from the <a class="reference external" href="https://github.com/tensorflow/models/tree/master/research/object_detection">TensorFlow Object Detection API</a>. Basically, <a class="reference external" href="https://github.com/tensorflow/models/blob/master/research/object_detection/colab_tutorials/object_detection_tutorial.ipynb">this tutorial</a>.</p>
+<p>As of version 0.7 of the package, only Python 3 and TensorFlow 2 are supported.</p>
 <div class="section" id="why">
 <h2>Why<a class="headerlink" href="#why" title="Permalink to this headline">¶</a></h2>
-<p>I have been working with object detection for quite some time now. After having to reimplement some detection algorithms, which are available online, but most times in a very convoluted way, I decided to create a Python package to make things easier not only for me, but for others.</p>
+<p>After having to follow the same computer vision tutorials to implement object detection every time I needed it for a project, I decided I had enough and created this Python package with detection methods I often use, ready to be used out of the box. I hope this makes things easier not only for me, but for others.</p>
+</div>
+<div class="section" id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p>Besides the dependencies listed on <code class="docutils literal notranslate"><span class="pre">setup.py</span></code>, the package also depends on:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/opencv/opencv_contrib">OpenCV 3 nonfree/contrib packages</a>, which include the SURF <a class="footnote-reference brackets" href="#id7" id="id1">1</a> and SIFT <a class="footnote-reference brackets" href="#id8" id="id2">2</a> keypoint detection algorithms</p></li>
+<li><p><a class="reference external" href="https://github.com/tensorflow/models/tree/master/research/object_detection">TensorFlow Object Detection API</a></p></li>
+</ul>
+<p>Follow their respective documentation pages to install them.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>There is an <code class="docutils literal notranslate"><span class="pre">opencv-contrib</span></code> package available on PyPI, but I have never tried installing it instead of doing the aforementioned process.</p>
+</div>
 </div>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<p>Besides the dependencies listed on <code class="docutils literal notranslate"><span class="pre">setup.py</span></code>, the package also depends on the <a class="reference external" href="https://github.com/opencv/opencv_contrib">OpenCV 3 nonfree/contrib packages</a>, which include the SURF <a class="footnote-reference brackets" href="#id7" id="id1">1</a> and SIFT <a class="footnote-reference brackets" href="#id8" id="id2">2</a> keypoint detection algorithms, as well as the <a class="reference external" href="https://github.com/tensorflow/models/tree/master/research/object_detection">TensorFlow Object Detection API</a>. Follow their respective documentation pages to install them.</p>
 <p>Since this package is not on PyPI, you can install it via <code class="docutils literal notranslate"><span class="pre">pip</span></code> like this:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip install git+https://github.com/douglasrizzo/dodo_detector.git
 </pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Please note that The TensorFlow Object Detection API does not yet support TensorFlow 2. This package has successfully been tested (up until 2020-21-02) with <code class="docutils literal notranslate"><span class="pre">tensorflow&gt;=1.13,</span> <span class="pre">&lt;=1.15.2</span></code> and <code class="docutils literal notranslate"><span class="pre">tensorflow-gpu&gt;=1.13,</span> <span class="pre">&lt;=1.15.2</span></code>.</p>
-<p>The installation process detects if <code class="docutils literal notranslate"><span class="pre">tensorflow-gpu</span></code> is already installed. If not, it will install <code class="docutils literal notranslate"><span class="pre">tensorflow&gt;=1.13,</span> <span class="pre">&lt;=1.15.2</span></code> (without GPU support). If you want GPU support, make sure <code class="docutils literal notranslate"><span class="pre">tensorflow</span></code> is not installed and install <code class="docutils literal notranslate"><span class="pre">tensorflow-gpu&gt;=1.13,</span> <span class="pre">&lt;=1.15.2</span></code> yourself.</p>
 </div>
 <p>OpenCV is a hard dependency and is installed via the PyPI <code class="docutils literal notranslate"><span class="pre">opencv-python</span></code> package. If you already have OpenCV installed (<em>e.g.</em> from source), edit <em>setup.py</em> and remove the hard dependency before installing.</p>
 </div>
 <div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<p>The package has two types of detector, a keypoint-based detector and a detector based on pre-trained convolutional neural networks from the TensorFlow <a class="reference external" href="https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md">model zoo</a>.</p>
+<p>The package has two types of detector, a keypoint-based detector and a detector that uses convolutional neural networks from the TensorFlow object detection API.</p>
 <p>All detectors have a common interface, with three methods:</p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">from_camera</span></code> takes a camera ID and uses OpenCV to read a frame stream, which is displayed on a separate window;</p></li>
@@ -228,12 +238,12 @@
 </div>
 <div class="section" id="convolutional-neural-network-detector-4">
 <h3>Convolutional neural network detector <a class="footnote-reference brackets" href="#id10" id="id6">4</a><a class="headerlink" href="#convolutional-neural-network-detector-4" title="Permalink to this headline">¶</a></h3>
-<p>This detector uses TensorFlow Object Detection API. In order to use it, you must either train your own neural network using their API, or provide a trained network. I have a concise <a class="reference external" href="https://gist.github.com/douglasrizzo/c70e186678f126f1b9005ca83d8bd2ce">tutorial</a> on how to train a neural network, with other useful links.</p>
-<p>The training procedure will give you the <em>frozen inference graph</em>, which is a <code class="docutils literal notranslate"><span class="pre">.pb</span></code> file; and a <em>label map</em>, which is a text file with extension <code class="docutils literal notranslate"><span class="pre">.pbtxt</span></code> containing the names of your object classes.</p>
-<p>This type of detector must be pointed towards the paths for the frozen inference graph and label map. The number of classes can be explicitly passed, or else classes will be counted from the contents of the label map.</p>
-<p>Example on running a single-shot detector:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dodo_detector.detection</span> <span class="kn">import</span> <span class="n">SingleShotDetector</span>
-<span class="n">detector</span> <span class="o">=</span> <span class="n">SingleShotDetector</span><span class="p">(</span><span class="s1">&#39;path/to/frozen/graph.pb&#39;</span><span class="p">,</span> <span class="s1">&#39;path/to/labels.pbtxt&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<p>This detector uses the TensorFlow Object Detection API. In order to use it, you must either train your own neural network using their API, or provide a trained network. I have a concise <a class="reference external" href="https://gist.github.com/douglasrizzo/c70e186678f126f1b9005ca83d8bd2ce">tutorial</a> on how to train a neural network, with other useful links.</p>
+<p>After training and exporting a model using the TFODAPI, a directory called <code class="docutils literal notranslate"><span class="pre">saved_model</span></code> will be created, whose contents are used by <em>dodo_detector</em> to load the model into memory. Another file that is needed is the <em>label map</em>, which is a text file with extension <code class="docutils literal notranslate"><span class="pre">.pbtxt</span></code> containing the names of your object classes.</p>
+<p>This type of detector must be pointed towards the paths of the <code class="docutils literal notranslate"><span class="pre">saved_model</span></code> directory and label map. The number of classes is inferred from the contents of the label map.</p>
+<p>Example on running a detector that uses the TensorFlow Object Detection API:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dodo_detector.detection</span> <span class="kn">import</span> <span class="n">TFObjectDetector</span>
+<span class="n">detector</span> <span class="o">=</span> <span class="n">TFObjectDetector</span><span class="p">(</span><span class="s1">&#39;path/to/frozen/saved_model&#39;</span><span class="p">,</span> <span class="s1">&#39;path/to/labels.pbtxt&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
 <span class="n">marked_image</span><span class="p">,</span> <span class="n">obj_dict</span> <span class="o">=</span> <span class="n">detector</span><span class="o">.</span><span class="n">from_image</span><span class="p">(</span><span class="n">im</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -295,11 +305,19 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, Douglas De Rizzo Meneghetti
+        
+        &copy; Copyright 2020, Douglas De Rizzo Meneghetti
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -310,7 +328,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {
