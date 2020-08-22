@@ -371,7 +371,6 @@ class TFObjectDetector(ObjectDetector):
         self._detection_graph = tf.saved_model.load(str(model_dir))
         # self._detection_graph = tf.saved_model.load(str(model_dir))
         self._category_index = label_map_util.create_category_index_from_labelmap(path_to_labels, use_display_name=True)
-        print('category index', self._category_index)
 
         self._categories = {}
         self._categories_public = []
@@ -431,11 +430,8 @@ class TFObjectDetector(ObjectDetector):
             # get the detection box around the object
             box_objects = output_dict['detection_boxes'][x]
 
-            print(output_dict['detection_boxes'])
-
             # positions of the box are between 0 and 1, relative to the size of the image
             # we multiply them by the size of the image to get the box location in pixels
-            print(input_tensor.shape)
             ymin = int(box_objects[0] * input_tensor.shape[1])
             xmin = int(box_objects[1] * input_tensor.shape[2])
             ymax = int(box_objects[2] * input_tensor.shape[1])
