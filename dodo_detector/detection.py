@@ -15,7 +15,7 @@ from warnings import warn
 from datetime import datetime, timedelta
 
 
-class ObjectDetector():
+class ObjectDetector:
     """
     Base class for object detectors used by the package.
     """
@@ -25,19 +25,23 @@ class ObjectDetector():
         # create logger
         self._logger = logging.getLogger('dodo_detector')
         self._logger.setLevel(logging.DEBUG)
-        # create file handler which logs even debug messages
-        self._fh = logging.FileHandler('/tmp/dodo_detector.log')
-        self._fh.setLevel(logging.DEBUG)
-        # create console handler with a higher log level
-        self._ch = logging.StreamHandler()
-        self._ch.setLevel(logging.DEBUG)
-        # create formatter and add it to the handlers
-        self._formatter = logging.Formatter('[%(asctime)s - %(name)s]: %(levelname)s: %(message)s')
-        self._fh.setFormatter(self._formatter)
-        self._ch.setFormatter(self._formatter)
-        # add the handlers to the logger
-        self._logger.addHandler(self._fh)
-        self._logger.addHandler(self._ch)
+
+        formatter = logging.Formatter('[%(asctime)s - %(name)s]: %(levelname)s: %(message)s')
+
+        fh = logging.FileHandler('/tmp/dodo_detector.log')
+        fh.setLevel(logging.DEBUG)
+
+        ch = logging.StreamHandler()
+        ch.setLevel(logging.DEBUG)
+
+        fh.setFormatter(formatter)
+        ch.setFormatter(formatter)
+
+        self._logger.addHandler(fh)
+        self._logger.addHandler(ch)
+
+    def add_logging_handler(self, h):
+        self._logger.addHandler(h)
 
     @abstractmethod
     def from_image(self, frame):
@@ -67,15 +71,19 @@ class ObjectDetector():
             elapsed_time += datetime.now() - start_time
 
             images += 1
-            # cv2.imshow("detection", marked_frame)
-            # if cv2.waitKey(1) == 27:
-            #     break  # ESC to quit
+            cv2.imshow("detection", marked_frame)
+            if cv2.waitKey(1) == 27:
+                break  # ESC to quit
+
+            if images % 100 == 0:
+                self._logger.info('Average FPS: {}'.format(images / elapsed_time.total_seconds()))
 
             ret, frame = get_frame(stream)
 
-        # cv2.destroyAllWindows()
+        cv2.destroyAllWindows()
 
-        print('Average FPS: {}'.format(images / elapsed_time.total_seconds()))
+        if elapsed_time.total_seconds() > 0:
+            self._logger.info('Final average FPS: {}'.format(images / elapsed_time.total_seconds()))
 
     def from_camera(self, camera_id=0):
         """
@@ -362,7 +370,7 @@ class TFObjectDetector(ObjectDetector):
     """
 
     def __init__(self, model_dir, path_to_labels, confidence=.8):
-        super(ObjectDetector, self).__init__()
+        super().__init__()
 
         if not 0 < confidence <= 1:
             raise ValueError("confidence must be between 0 and 1")
