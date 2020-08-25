@@ -54,7 +54,7 @@ class ObjectDetector:
         """
         pass
 
-    def _detect_from_stream(self, get_frame, stream):
+    def _detect_from_stream(self, get_frame, stream, show):
         """
         This internal method detects objects from images retrieved from a stream, given a method that extracts frames from this stream
 
@@ -71,21 +71,22 @@ class ObjectDetector:
             elapsed_time += datetime.now() - start_time
 
             images += 1
-            cv2.imshow("detection", marked_frame)
-            if cv2.waitKey(1) == 27:
-                break  # ESC to quit
+            if show:
+                cv2.imshow("detection", marked_frame)
+                if cv2.waitKey(1) == 27:
+                    break  # ESC to quit
 
             if images % 100 == 0:
                 self._logger.info('Average FPS: {}'.format(images / elapsed_time.total_seconds()))
 
             ret, frame = get_frame(stream)
-
-        cv2.destroyAllWindows()
+        if show:
+            cv2.destroyAllWindows()
 
         if elapsed_time.total_seconds() > 0:
             self._logger.info('Final average FPS: {}'.format(images / elapsed_time.total_seconds()))
 
-    def from_camera(self, camera_id=0):
+    def from_camera(self, camera_id=0, show=False):
         """
         Detects objects in frames from a camera feed
 
@@ -100,10 +101,10 @@ class ObjectDetector:
         stream = WebcamVideoStream(src=camera_id)
 
         stream.start()
-        self._detect_from_stream(get_frame, stream)
+        self._detect_from_stream(get_frame, stream, show)
         stream.stop()
 
-    def from_video(self, filepath):
+    def from_video(self, filepath, show=False):
         """
         Detects objects in frames from a video file
         
@@ -117,7 +118,7 @@ class ObjectDetector:
         stream = cv2.VideoCapture()
         stream.open(filename=filepath)
 
-        self._detect_from_stream(get_frame, stream)
+        self._detect_from_stream(get_frame, stream, show)
 
     @staticmethod
     def is_rgb(im):
