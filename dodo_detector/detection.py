@@ -75,11 +75,8 @@ class ObjectDetector:
                 cv2.imshow("detection", marked_frame)
                 if cv2.waitKey(1) == 27:
                     break  # ESC to quit
-
-            if images % 100 == 0:
-                self._logger.info('Average FPS: {}'.format(images / elapsed_time.total_seconds()))
-
             ret, frame = get_frame(stream)
+
         if show:
             cv2.destroyAllWindows()
 
