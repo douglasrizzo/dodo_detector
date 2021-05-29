@@ -41,7 +41,7 @@ Since this package is not on PyPI, you can install it via ``pip`` like this:
 
 OpenCV is a hard dependency and is installed via the PyPI ``opencv-python`` package. If you already have OpenCV installed (*e.g.* from source), edit *setup.py* and remove the hard dependency before installing.
 
-As for TensorFlow, one option is either install the specific TensorFlow version that is going to be used, or to create a virtualenv. Make sure to also have the Object Detection API installed. Only the API compatible with your TensorFlow and Python versions should be on your ``PYTHONPATH``.
+As for TensorFlow, either install the specific TensorFlow version that is going to be used, or create a virtualenv to run this package along with your TensorFlow version of choice. Make sure to also have the Object Detection API installed. Only the API compatible with your TensorFlow and Python versions should be on your ``PYTHONPATH``.
 
 Usage
 -----
@@ -104,8 +104,8 @@ Basically, the top-level directory will contain subdirectories. The name of each
 
 You can then use the methods provided by the detector to detect objects in your images, videos or camera feed.
 
-Convolutional neural network detectors [4]_
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Convolutional neural network detectors
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 These detectors use the TensorFlow Object Detection API. In order to use them, you must either train your own neural network using their API, or provide a trained network. I have a concise `tutorial <https://gist.github.com/douglasrizzo/c70e186678f126f1b9005ca83d8bd2ce>`__ on how to train a neural network for TensorFlow 2, with other useful links.
 
@@ -146,4 +146,3 @@ Have fun!
 .. [1] H. Bay, A. Ess, T. Tuytelaars, and L. Van Gool, “Speeded-up robust features (SURF),” Computer vision and image understanding, vol. 110, no. 3, pp. 346–359, 2008.
 .. [2] D. G. Lowe, “Object recognition from local scale-invariant features,” in Proceedings of the Seventh IEEE International Conference on Computer Vision, 1999, vol. 2, pp. 1150–1157.
 .. [3] R. Arandjelović and A. Zisserman, “Three things everyone should know to improve object retrieval,” in 2012 IEEE Conference on Computer Vision and Pattern Recognition, 2012, pp. 2911–2918.
-.. [4] W. Liu et al., “SSD: Single Shot MultiBox Detector,” arXiv:1512.02325 [cs], vol. 9905, pp. 21–37, 2016.
