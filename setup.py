@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 
-from setuptools import setup, find_packages
-from dodo_detector import __version__
+from setuptools import find_packages, setup
 
-from setuptools import setup, find_packages
+from dodo_detector import __version__
 
 setup(
     classifiers=[

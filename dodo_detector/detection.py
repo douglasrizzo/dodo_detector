@@ -1,17 +1,17 @@
 #!/usr/bin/env python
 
-import os
-import cv2
 import logging
+import os
+from abc import ABCMeta, abstractmethod
+from datetime import datetime, timedelta
+
+import cv2
 import numpy as np
 import tensorflow as tf
-
-from tqdm import tqdm
-from abc import ABCMeta, abstractmethod
+from imutils.video import WebcamVideoStream
 from object_detection.utils import label_map_util
 from object_detection.utils import visualization_utils as vis_util
-from imutils.video import WebcamVideoStream
-from datetime import datetime, timedelta
+from tqdm import tqdm
 
 
 class ObjectDetector:
