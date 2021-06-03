@@ -14,7 +14,7 @@ import tensorflow as tf
 from PIL import Image
 from tqdm import tqdm
 
-from dodo_detector.detection import (ObjectDetector, TFObjectDetectorV1, TFObjectDetectorV2)
+from detection import (ObjectDetector, TFObjectDetectorV1, TFObjectDetectorV2)
 
 
 class TheOnlyTestCase(unittest.TestCase):
@@ -81,6 +81,9 @@ class TheOnlyTestCase(unittest.TestCase):
         # load image locations into list
         ims = [self.__imagedir + '/' + im for im in os.listdir(self.__imagedir)]
         ims.sort()
+
+        img = np.array(Image.open(ims[0]).convert('RGB'))
+        marked_image, objects = detector.from_image(img)
 
         # run detector on every image
         for im in tqdm(ims):
