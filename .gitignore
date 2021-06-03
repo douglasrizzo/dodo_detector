@@ -1,3 +1,12 @@
+# Test-related files
+images.zip
+labelmap.pbtxt
+v1_model.tar.gz
+v2_model.tar.gz
+images
+efficientdet_d0_coco17_tpu-32
+faster_rcnn_resnet50_coco_2018_01_28
+
 # PyCharm files
 .idea
 
