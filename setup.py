@@ -29,9 +29,13 @@ setup(
     author='Douglas De Rizzo Meneghetti',
     author_email='douglasrizzom@gmail.com',
     packages=find_packages(exclude=['contrib', 'docs']),
-    install_requires=['numpy', 'tqdm', 'imutils', 'opencv-python', 'tensorflow>=2.2.0'],
+    install_requires=['numpy', 'tqdm', 'imutils', 'opencv-python'],
     extras_require={
         'testing': ['nose', 'pillow', 'matplotlib'],
+        'tf1-cpu': ['tensorflow==1.15'],
+        'tf2-cpu': ['tensorflow>=2.2.0'],
+        'tf1-gpu': ['tensorflow-gpu==1.15'],
+        'tf2-gpu': ['tensorflow-gpu>=2.2.0'],
         'docs': ['Sphinx', 'numpydoc', 'sphinx_autodoc_annotation', 'sphinx_rtd_theme']
     },
     license='GPLv3'
