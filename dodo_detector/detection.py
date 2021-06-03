@@ -363,7 +363,7 @@ class TFObjectDetector(ObjectDetector):
     :param confidence: a value between 0 and 1 representing the confidence level the network has in the detection to consider it an actual detection.
     """
 
-    def __init__(self, confidence=.8):
+    def __init__(self, confidence=.8, mark_objects=True):
         super().__init__()
 
         if not 0 < confidence <= 1:
@@ -372,6 +372,7 @@ class TFObjectDetector(ObjectDetector):
         self._categories = {}
         self._categories_public = []
         self._confidence = confidence
+        self._mark_objects = mark_objects
 
     @property
     def confidence(self):
@@ -395,8 +396,8 @@ class TFObjectDetectorV2(TFObjectDetector):
     :param confidence: a value between 0 and 1 representing the confidence level the network has in the detection to consider it an actual detection.
     """
 
-    def __init__(self, model_dir, path_to_labels, confidence=.8):
-        super().__init__(confidence)
+    def __init__(self, model_dir, path_to_labels, confidence=.8, mark_objects=True):
+        super().__init__(confidence, mark_objects)
 
         label_map = label_map_util.load_labelmap(path_to_labels)
         categories = label_map_util.convert_label_map_to_categories(
@@ -472,17 +473,21 @@ class TFObjectDetectorV2(TFObjectDetector):
             detection_masks_reframed = tf.cast(detection_masks_reframed > 0.5, tf.uint8)
             output_dict['detection_masks_reframed'] = detection_masks_reframed.numpy()
 
-        # Visualization of the results of a detection.
-        vis_util.visualize_boxes_and_labels_on_image_array(
-            frame,
-            output_dict['detection_boxes'],
-            output_dict['detection_classes'],
-            output_dict['detection_scores'],
-            self._category_index,
-            instance_masks=output_dict.get('detection_masks_reframed', None),
-            use_normalized_coordinates=True,
-            line_thickness=8
-        )
+        if self._mark_objects:
+            # Visualization of the results of a detection.
+            vis_util.visualize_boxes_and_labels_on_image_array(
+                frame,
+                output_dict['detection_boxes'],
+                output_dict['detection_classes'],
+                output_dict['detection_scores'],
+                self._category_index,
+                instance_masks=output_dict.get('detection_masks_reframed', None),
+                use_normalized_coordinates=True,
+                line_thickness=8,
+                max_boxes_to_draw=200,
+                min_score_thresh=.30,
+                agnostic_mode=False
+            )
 
         return frame, detected_objects
 
@@ -496,8 +501,8 @@ class TFObjectDetectorV1(TFObjectDetector):
     :param confidence: a value between 0 and 1 representing the confidence level the network has in the detection to consider it an actual detection.
     """
 
-    def __init__(self, path_to_frozen_graph, path_to_labels, confidence=.8):
-        super().__init__(confidence)
+    def __init__(self, path_to_frozen_graph, path_to_labels, confidence=.8, mark_objects=True):
+        super().__init__(confidence, mark_objects)
 
         if not 0 < confidence <= 1:
             raise ValueError("confidence must be between 0 and 1")
@@ -584,15 +589,16 @@ class TFObjectDetectorV1(TFObjectDetector):
             detected_objects[class_name].append({'box': (ymin, xmin, ymax, xmax), 'confidence': scores[0][x]})
 
         # Visualization of the results of a detection.
-        vis_util.visualize_boxes_and_labels_on_image_array(
-            frame,
-            np.squeeze(boxes),
-            np.squeeze(classes).astype(np.int32),
-            np.squeeze(scores),
-            self._category_index,
-            use_normalized_coordinates=True,
-            line_thickness=8,
-            min_score_thresh=self._confidence
-        )
+        if self._mark_objects:
+            vis_util.visualize_boxes_and_labels_on_image_array(
+                frame,
+                np.squeeze(boxes),
+                np.squeeze(classes).astype(np.int32),
+                np.squeeze(scores),
+                self._category_index,
+                use_normalized_coordinates=True,
+                line_thickness=8,
+                min_score_thresh=self._confidence
+            )
 
         return frame, detected_objects
