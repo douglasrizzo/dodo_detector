@@ -398,14 +398,22 @@ class TFObjectDetectorV2(TFObjectDetector):
     def __init__(self, model_dir, path_to_labels, confidence=.8):
         super().__init__(confidence)
 
+        label_map = label_map_util.load_labelmap(path_to_labels)
+        categories = label_map_util.convert_label_map_to_categories(
+            label_map, max_num_classes=label_map_util.get_max_label_map_index(label_map), use_display_name=True
+        )
+        self._category_index = label_map_util.create_category_index(categories)
+        useless_inverted_label_map = label_map_util.get_label_map_dict(label_map, use_display_name=True)
+
+        self._label_map_dict = {}
+        for key in useless_inverted_label_map:
+            self._label_map_dict[useless_inverted_label_map[key]] = key
+            self._categories_public.append(key)
+
         # load (frozen) tensorflow model into memory
         self._detection_graph = tf.saved_model.load(str(model_dir))
-        # self._detection_graph = tf.saved_model.load(str(model_dir))
-        self._category_index = label_map_util.create_category_index_from_labelmap(path_to_labels, use_display_name=True)
 
-        for key in self._category_index:
-            self._categories[self._category_index[key]['id']] = self._category_index[key]['name']
-            self._categories_public.append(self._category_index[key]['name'])
+        self._model_fn = self._detection_graph.signatures['serving_default']
 
     def from_image(self, frame):
         # object recognition begins here
@@ -418,8 +426,7 @@ class TFObjectDetectorV2(TFObjectDetector):
         input_tensor = input_tensor[tf.newaxis, ...]
 
         # Run inference
-        model_fn = self._detection_graph.signatures['serving_default']
-        output_dict = model_fn(input_tensor)
+        output_dict = self._model_fn(input_tensor)
 
         # All outputs are batches tensors.
         # Convert to numpy arrays, and take index [0] to remove the batch dimension.
@@ -439,7 +446,7 @@ class TFObjectDetectorV2(TFObjectDetector):
         for x in range(worthy_detections):
 
             # capture the class of the detected object
-            class_name = self._categories[int(output_dict['detection_classes'][x])]
+            class_name = self._label_map_dict[int(output_dict['detection_classes'][x])]
 
             # get the detection box around the object
             box_objects = output_dict['detection_boxes'][x]
@@ -495,15 +502,6 @@ class TFObjectDetectorV1(TFObjectDetector):
         if not 0 < confidence <= 1:
             raise ValueError("confidence must be between 0 and 1")
 
-        # load (frozen) tensorflow model into memory
-        self._detection_graph = tf.Graph()
-        with self._detection_graph.as_default():
-            od_graph_def = tf.GraphDef()
-            with tf.gfile.GFile(path_to_frozen_graph, 'rb') as fid:
-                serialized_graph = fid.read()
-                od_graph_def.ParseFromString(serialized_graph)
-                tf.import_graph_def(od_graph_def, name='')
-
         # Label maps map indices to category names, so that when our convolution
         # network predicts 5, we know that this corresponds to airplane.
         # Here we use internal utility functions, but anything that returns a
@@ -525,6 +523,15 @@ class TFObjectDetectorV1(TFObjectDetector):
             self._categories_public.append(tmp['name'])
 
         self._confidence = confidence
+
+        # load (frozen) tensorflow model into memory
+        self._detection_graph = tf.Graph()
+        with self._detection_graph.as_default():
+            od_graph_def = tf.GraphDef()
+            with tf.gfile.GFile(path_to_frozen_graph, 'rb') as fid:
+                serialized_graph = fid.read()
+                od_graph_def.ParseFromString(serialized_graph)
+                tf.import_graph_def(od_graph_def, name='')
 
         # create a session that will be used until our detector is set on fire by the gc
         self._session = tf.Session(graph=self._detection_graph)
