@@ -97,6 +97,10 @@ class TheOnlyTestCase(unittest.TestCase):
             img = np.array(Image.open(im).convert("RGB"))
             marked_image, objects = detector.from_image(img)
 
+    def _load_image_and_run_detector(self, detector: ObjectDetector):
+        img = np.array(Image.open('img.jpg').convert("RGB"))
+        marked_image, objects = detector.from_image(img)
+
     def setUp(self):
         self.maybe_download_labelmap()
         self.maybe_download_image_dataset()
@@ -131,7 +135,7 @@ class TF1TestCase(TheOnlyTestCase):
     def runTest(self):
         # create detector
         detector = TFObjectDetectorV1(self.__model + "/frozen_inference_graph.pb", self.__labelmap)
-        self._load_images_and_run_detector(detector)
+        self._load_image_and_run_detector(detector)
 
 
 class TF2TestCase(TheOnlyTestCase):
@@ -148,7 +152,7 @@ class TF2TestCase(TheOnlyTestCase):
     def runTest(self):
         # create detector
         detector = TFObjectDetectorV2(self.__model + "/saved_model", self.__labelmap)
-        self._load_images_and_run_detector(detector)
+        self._load_image_and_run_detector(detector)
 
 
 if __name__ == "__main__":

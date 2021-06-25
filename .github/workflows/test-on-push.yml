@@ -23,6 +23,7 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           git clone https://github.com/tensorflow/models.git
           cd models/research && protoc object_detection/protos/*.proto --python_out=. && cp object_detection/packages/tf2/setup.py . &&  python -m pip install --use-feature=2020-resolver .
+          wget https://cdn.vox-cdn.com/thumbor/nXsM87Y-VlJH1SZvDbsukEBbbEw=/0x0:7360x4912/1200x800/filters:focal(3092x1868:4268x3044)/cdn.vox-cdn.com/uploads/chorus_image/image/65313883/shutterstock_1432933382.0.jpg -O img.jpg
       - name: Lint with flake8
         run: |
           # stop the build if there are Python syntax errors or undefined names
