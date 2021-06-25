@@ -17,9 +17,12 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install package and dependencies
         run: |
+          apt install protobuf-compiler
           python -m pip install --upgrade pip
           pip install .[dev,testing]
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          git clone https://github.com/tensorflow/models.git
+          cd models/research && protoc object_detection/protos/*.proto --python_out=. && cp object_detection/packages/tf2/setup.py . &&  python -m pip install --use-feature=2020-resolver .
       - name: Lint with flake8
         run: |
           # stop the build if there are Python syntax errors or undefined names
