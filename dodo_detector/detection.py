@@ -18,16 +18,17 @@ class ObjectDetector:
     """
     Base class for object detectors used by the package.
     """
+
     __metaclass__ = ABCMeta
 
     def __init__(self):
         # create logger
-        self._logger = logging.getLogger('dodo_detector')
+        self._logger = logging.getLogger("dodo_detector")
         self._logger.setLevel(logging.DEBUG)
 
-        formatter = logging.Formatter('[%(asctime)s - %(name)s]: %(levelname)s: %(message)s')
+        formatter = logging.Formatter("[%(asctime)s - %(name)s]: %(levelname)s: %(message)s")
 
-        fh = logging.FileHandler('/tmp/dodo_detector.log')
+        fh = logging.FileHandler("/tmp/dodo_detector.log")
         fh.setLevel(logging.DEBUG)
 
         ch = logging.StreamHandler()
@@ -80,7 +81,7 @@ class ObjectDetector:
             cv2.destroyAllWindows()
 
         if elapsed_time.total_seconds() > 0:
-            self._logger.info('Final average FPS: {}'.format(images / elapsed_time.total_seconds()))
+            self._logger.info("Final average FPS: {}".format(images / elapsed_time.total_seconds()))
 
     def from_camera(self, camera_id=0, show=False):
         """
@@ -103,7 +104,7 @@ class ObjectDetector:
     def from_video(self, filepath, show=False):
         """
         Detects objects in frames from a video file
-        
+
         :param filepath: the path to the video file
         """
 
@@ -147,12 +148,12 @@ class KeypointObjectDetector(ObjectDetector):
     @detector_type.setter
     def detector_type(self, value):
         # create the detector
-        if value in ['SIFT', 'RootSIFT']:
+        if value in ["SIFT", "RootSIFT"]:
             self.detector = cv2.xfeatures2d.SIFT_create()
-        elif value == 'SURF':
+        elif value == "SURF":
             self.detector = cv2.xfeatures2d.SURF_create()
         else:
-            raise ValueError('Invalid detector type')
+            raise ValueError("Invalid detector type")
 
         self._detector_type = value
 
@@ -163,15 +164,15 @@ class KeypointObjectDetector(ObjectDetector):
     @matcher_type.setter
     def matcher_type(self, value):
         # get which OpenCV feature matcher the user wants
-        if value == 'BF':
+        if value == "BF":
             self.matcher = cv2.BFMatcher()
-        elif value == 'FLANN':
+        elif value == "FLANN":
             flann_index_kdtree = 0
             index_params = dict(algorithm=flann_index_kdtree, trees=5)
             search_params = dict(checks=50)  # or pass empty dictionary
             self.matcher = cv2.FlannBasedMatcher(index_params, search_params)
         else:
-            raise ValueError('Invalid matcher type')
+            raise ValueError("Invalid matcher type")
 
         self._matcher_type = value
 
@@ -187,8 +188,8 @@ class KeypointObjectDetector(ObjectDetector):
     def database_path(self, value):
         # get the directory where object textures are stored
         self._database_path = value
-        if self._database_path[-1] != '/':
-            self._database_path += '/'
+        if self._database_path[-1] != "/":
+            self._database_path += "/"
         # store object classes in a list
         # each directory in the object database corresponds to a class
         self._categories = [os.path.basename(d) for d in os.listdir(self._database_path)]
@@ -206,7 +207,14 @@ class KeypointObjectDetector(ObjectDetector):
         for obj in self.categories:
             self.object_features[obj] = self._load_features(obj)
 
-    def __init__(self, database_path, detector_type='RootSIFT', matcher_type='BF', min_points=10, logging=False):
+    def __init__(
+        self,
+        database_path,
+        detector_type="RootSIFT",
+        matcher_type="BF",
+        min_points=10,
+        logging=False,
+    ):
         super(ObjectDetector, self).__init__()
 
         self.current_frame = 0
@@ -227,8 +235,8 @@ class KeypointObjectDetector(ObjectDetector):
         :return: a list of tuples, each tuple containing the processed image as a grayscale numpy.ndarray, its keypoints and desciptors
         """
         img_files = [
-            os.path.join(self.database_path + object_name + '/', f) for f in os.listdir(self.database_path + object_name + '/')
-            if os.path.isfile(os.path.join(self.database_path + object_name + '/', f))
+            os.path.join(self.database_path + object_name + "/", f) for f in os.listdir(self.database_path + object_name + "/")
+            if os.path.isfile(os.path.join(self.database_path + object_name + "/", f))
         ]
 
         pbar = tqdm(desc=object_name, total=len(img_files))
@@ -263,7 +271,7 @@ class KeypointObjectDetector(ObjectDetector):
         for img_feature in img_features:
             obj_image, obj_keypoints, obj_descriptors = img_feature
 
-            if obj_descriptors is not None and len(obj_descriptors) > 0 and scene_descs is not None and len(scene_descs) > 0:
+            if (obj_descriptors is not None and len(obj_descriptors) > 0 and scene_descs is not None and len(scene_descs) > 0):
                 matches = self.matcher.knnMatch(obj_descriptors, scene_descs, k=2)
 
                 # store all the good matches as per Lowe's ratio test
@@ -285,7 +293,7 @@ class KeypointObjectDetector(ObjectDetector):
                     if M is None:
                         break
 
-                    if (len(obj_image.shape) == 2):
+                    if len(obj_image.shape) == 2:
                         h, w = obj_image.shape
                     else:
                         h, w, _ = obj_image.shape
@@ -312,17 +320,17 @@ class KeypointObjectDetector(ObjectDetector):
     def _detectAndCompute(self, image):
         """
         Detects keypoints and generates descriptors according to the desired algorithm
-        
+
         :param image: a numpy.ndarray containing the image whose keypoints and descriptors will be processed
         :return: a tuple containing keypoints and descriptors
         """
         keypoints, descriptors = self.detector.detectAndCompute(image, None)
-        if self.detector_type == 'RootSIFT' and len(keypoints) > 0:
+        if self.detector_type == "RootSIFT" and len(keypoints) > 0:
             # Transforms SIFT descriptors into RootSIFT descriptors
             # apply the Hellinger kernel by first L1-normalizing
             # and taking the square-root
             eps = 1e-7
-            descriptors /= (descriptors.sum(axis=1, keepdims=True) + eps)
+            descriptors /= descriptors.sum(axis=1, keepdims=True) + eps
             descriptors = np.sqrt(descriptors)
 
         return keypoints, descriptors
@@ -345,13 +353,21 @@ class KeypointObjectDetector(ObjectDetector):
                 if object_name not in detected_objects:
                     detected_objects[object_name] = []
 
-                detected_objects[object_name].append({'box': (ymin, xmin, ymax, xmax)})
+                detected_objects[object_name].append({"box": (ymin, xmin, ymax, xmax)})
 
                 text_point = (homography[0][0], homography[1][1])
                 homography = homography.reshape((-1, 1, 2))
                 cv2.polylines(frame, [homography], True, (0, 255, 255), 10)
 
-                cv2.putText(frame, object_name + ': ' + str(self.object_counters[object_name]), text_point, cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.2, (0, 0, 0), 2)
+                cv2.putText(
+                    frame,
+                    object_name + ": " + str(self.object_counters[object_name]),
+                    text_point,
+                    cv2.FONT_HERSHEY_COMPLEX_SMALL,
+                    1.2,
+                    (0, 0, 0),
+                    2,
+                )
 
         return frame, detected_objects
 
@@ -363,7 +379,7 @@ class TFObjectDetector(ObjectDetector):
     :param confidence: a value between 0 and 1 representing the confidence level the network has in the detection to consider it an actual detection.
     """
 
-    def __init__(self, confidence=.8, mark_objects=True):
+    def __init__(self, confidence=0.8, mark_objects=True):
         super().__init__()
 
         if not 0 < confidence <= 1:
@@ -396,12 +412,14 @@ class TFObjectDetectorV2(TFObjectDetector):
     :param confidence: a value between 0 and 1 representing the confidence level the network has in the detection to consider it an actual detection.
     """
 
-    def __init__(self, model_dir, path_to_labels, confidence=.8, mark_objects=True):
+    def __init__(self, model_dir, path_to_labels, confidence=0.8, mark_objects=True):
         super().__init__(confidence, mark_objects)
 
         label_map = label_map_util.load_labelmap(path_to_labels)
         categories = label_map_util.convert_label_map_to_categories(
-            label_map, max_num_classes=label_map_util.get_max_label_map_index(label_map), use_display_name=True
+            label_map,
+            max_num_classes=label_map_util.get_max_label_map_index(label_map),
+            use_display_name=True,
         )
         self._category_index = label_map_util.create_category_index(categories)
         useless_inverted_label_map = label_map_util.get_label_map_dict(label_map, use_display_name=True)
@@ -414,7 +432,7 @@ class TFObjectDetectorV2(TFObjectDetector):
         # load (frozen) tensorflow model into memory
         self._detection_graph = tf.saved_model.load(str(model_dir))
 
-        self._model_fn = self._detection_graph.signatures['serving_default']
+        self._model_fn = self._detection_graph.signatures["serving_default"]
 
     def from_image(self, frame):
         # object recognition begins here
@@ -432,25 +450,25 @@ class TFObjectDetectorV2(TFObjectDetector):
         # All outputs are batches tensors.
         # Convert to numpy arrays, and take index [0] to remove the batch dimension.
         # We're only interested in the first num_detections.
-        num_detections = int(output_dict.pop('num_detections'))
+        num_detections = int(output_dict.pop("num_detections"))
         output_dict = {key: value[0, :num_detections].numpy() for key, value in output_dict.items()}
-        output_dict['num_detections'] = num_detections
+        output_dict["num_detections"] = num_detections
 
         # detection_classes should be ints.
-        output_dict['detection_classes'] = output_dict['detection_classes'].astype(np.int64)
+        output_dict["detection_classes"] = output_dict["detection_classes"].astype(np.int64)
 
         # count how many scores are above the designated threshold
-        worthy_detections = sum(score >= self._confidence for score in output_dict['detection_scores'])
+        worthy_detections = sum(score >= self._confidence for score in output_dict["detection_scores"])
 
         detected_objects = {}
         # analyze all worthy detections
         for x in range(worthy_detections):
 
             # capture the class of the detected object
-            class_name = self._label_map_dict[int(output_dict['detection_classes'][x])]
+            class_name = self._label_map_dict[int(output_dict["detection_classes"][x])]
 
             # get the detection box around the object
-            box_objects = output_dict['detection_boxes'][x]
+            box_objects = output_dict["detection_boxes"][x]
 
             # positions of the box are between 0 and 1, relative to the size of the image
             # we multiply them by the size of the image to get the box location in pixels
@@ -462,31 +480,37 @@ class TFObjectDetectorV2(TFObjectDetector):
             if class_name not in detected_objects:
                 detected_objects[class_name] = []
 
-            detected_objects[class_name].append({'box': (ymin, xmin, ymax, xmax), 'confidence': output_dict['detection_scores'][x]})
+            detected_objects[class_name].append({
+                "box": (ymin, xmin, ymax, xmax),
+                "confidence": output_dict["detection_scores"][x],
+            })
 
         # Handle models with masks:
-        if 'detection_masks' in output_dict:
+        if "detection_masks" in output_dict:
             # Reframe the the bbox mask to the image size.
             detection_masks_reframed = utils_ops.reframe_box_masks_to_image_masks(
-                output_dict['detection_masks'], output_dict['detection_boxes'], input_tensor.shape[3], input_tensor.shape[2]
+                output_dict["detection_masks"],
+                output_dict["detection_boxes"],
+                input_tensor.shape[3],
+                input_tensor.shape[2],
             )
             detection_masks_reframed = tf.cast(detection_masks_reframed > 0.5, tf.uint8)
-            output_dict['detection_masks_reframed'] = detection_masks_reframed.numpy()
+            output_dict["detection_masks_reframed"] = detection_masks_reframed.numpy()
 
         if self._mark_objects:
             # Visualization of the results of a detection.
             vis_util.visualize_boxes_and_labels_on_image_array(
                 frame,
-                output_dict['detection_boxes'],
-                output_dict['detection_classes'],
-                output_dict['detection_scores'],
+                output_dict["detection_boxes"],
+                output_dict["detection_classes"],
+                output_dict["detection_scores"],
                 self._category_index,
-                instance_masks=output_dict.get('detection_masks_reframed', None),
+                instance_masks=output_dict.get("detection_masks_reframed", None),
                 use_normalized_coordinates=True,
                 line_thickness=8,
                 max_boxes_to_draw=200,
-                min_score_thresh=.30,
-                agnostic_mode=False
+                min_score_thresh=0.30,
+                agnostic_mode=False,
             )
 
         return frame, detected_objects
@@ -501,7 +525,7 @@ class TFObjectDetectorV1(TFObjectDetector):
     :param confidence: a value between 0 and 1 representing the confidence level the network has in the detection to consider it an actual detection.
     """
 
-    def __init__(self, path_to_frozen_graph, path_to_labels, confidence=.8, mark_objects=True):
+    def __init__(self, path_to_frozen_graph, path_to_labels, confidence=0.8, mark_objects=True):
         super().__init__(confidence, mark_objects)
 
         if not 0 < confidence <= 1:
@@ -515,8 +539,8 @@ class TFObjectDetectorV1(TFObjectDetector):
 
         # this is a workaround to guess the number of classes by the contents of the label map
         # it may not be perfect
-        label_map_contents = open(path_to_labels, 'r').read()
-        num_classes = label_map_contents.count('name:')
+        label_map_contents = open(path_to_labels, "r").read()
+        num_classes = label_map_contents.count("name:")
 
         categories = label_map_util.convert_label_map_to_categories(label_map, max_num_classes=num_classes, use_display_name=True)
         self._category_index = label_map_util.create_category_index(categories)
@@ -524,8 +548,8 @@ class TFObjectDetectorV1(TFObjectDetector):
         self._categories = {}
         self._categories_public = []
         for tmp in categories:
-            self._categories[int(tmp['id'])] = tmp['name']
-            self._categories_public.append(tmp['name'])
+            self._categories[int(tmp["id"])] = tmp["name"]
+            self._categories_public.append(tmp["name"])
 
         self._confidence = confidence
 
@@ -533,10 +557,10 @@ class TFObjectDetectorV1(TFObjectDetector):
         self._detection_graph = tf.Graph()
         with self._detection_graph.as_default():
             od_graph_def = tf.GraphDef()
-            with tf.gfile.GFile(path_to_frozen_graph, 'rb') as fid:
+            with tf.gfile.GFile(path_to_frozen_graph, "rb") as fid:
                 serialized_graph = fid.read()
                 od_graph_def.ParseFromString(serialized_graph)
-                tf.import_graph_def(od_graph_def, name='')
+                tf.import_graph_def(od_graph_def, name="")
 
         # create a session that will be used until our detector is set on fire by the gc
         self._session = tf.Session(graph=self._detection_graph)
@@ -550,17 +574,20 @@ class TFObjectDetectorV1(TFObjectDetector):
         height, width, z = frame.shape
 
         image_np_expanded = np.expand_dims(frame, axis=0)
-        image_tensor = self._detection_graph.get_tensor_by_name('image_tensor:0')
+        image_tensor = self._detection_graph.get_tensor_by_name("image_tensor:0")
         # Each box represents a part of the image where a particular object was detected.
-        boxes = self._detection_graph.get_tensor_by_name('detection_boxes:0')
+        boxes = self._detection_graph.get_tensor_by_name("detection_boxes:0")
         # Each score represent how level of confidence for each of the objects.
         # Score is shown on the result image, together with the class label.
-        scores = self._detection_graph.get_tensor_by_name('detection_scores:0')
-        classes = self._detection_graph.get_tensor_by_name('detection_classes:0')
-        num_detections = self._detection_graph.get_tensor_by_name('num_detections:0')
+        scores = self._detection_graph.get_tensor_by_name("detection_scores:0")
+        classes = self._detection_graph.get_tensor_by_name("detection_classes:0")
+        num_detections = self._detection_graph.get_tensor_by_name("num_detections:0")
 
         # Actual detection
-        boxes, scores, classes, num_detections = self._session.run([boxes, scores, classes, num_detections], feed_dict={image_tensor: image_np_expanded})
+        boxes, scores, classes, num_detections = self._session.run(
+            [boxes, scores, classes, num_detections],
+            feed_dict={image_tensor: image_np_expanded},
+        )
 
         # count how many scores are above the designated threshold
         worthy_detections = sum(score >= self._confidence for score in scores[0])
@@ -586,7 +613,7 @@ class TFObjectDetectorV1(TFObjectDetector):
             if class_name not in detected_objects:
                 detected_objects[class_name] = []
 
-            detected_objects[class_name].append({'box': (ymin, xmin, ymax, xmax), 'confidence': scores[0][x]})
+            detected_objects[class_name].append({"box": (ymin, xmin, ymax, xmax), "confidence": scores[0][x]})
 
         # Visualization of the results of a detection.
         if self._mark_objects:
@@ -598,7 +625,7 @@ class TFObjectDetectorV1(TFObjectDetector):
                 self._category_index,
                 use_normalized_coordinates=True,
                 line_thickness=8,
-                min_score_thresh=self._confidence
+                min_score_thresh=self._confidence,
             )
 
         return frame, detected_objects
