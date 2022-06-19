@@ -394,13 +394,13 @@ class TFObjectDetector(ObjectDetector):
     def confidence(self):
         return self._confidence
 
-    @property
-    def categories(self):
-        return self._categories_public
-
     @confidence.setter
     def confidence(self, value):
         self._confidence = value
+
+    @property
+    def categories(self):
+        return self._categories_public
 
 
 class TFObjectDetectorV2(TFObjectDetector):
