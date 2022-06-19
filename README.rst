@@ -119,10 +119,28 @@ This type of detector must be pointed towards the paths for the frozen inference
 Example on running the detector:
 
 .. code-block:: python
+    # load an image as a numpy array
+    import numpy as np
+    from PIL import Image
+    im = np.array(Image.open('image.jpg'))
 
+    # create the detector, pointing to the pre-trained model and the label map
     from dodo_detector.detection import TFObjectDetectorV1
     detector = TFObjectDetectorV1('path/to/frozen/graph.pb', 'path/to/labels.pbtxt')
-    marked_image, obj_dict = detector.from_image(im)
+
+    # use the detector to find objects in an image
+    marked_image, objects = detector.from_image(im)
+    # list objects found. locations are given in tuples in the format (ymin, xmin, ymax, xmax)
+    objects
+    {'person': [(204, 456, 377, 534),
+    (182, 283, 370, 383),
+    (181, 222, 368, 282),
+    (184, 37, 379, 109),
+    (169, 0, 371, 66),
+    (199, 397, 371, 440),
+    (197, 108, 365, 191),
+    (184, 363, 377, 414),
+    (195, 144, 363, 195)]}
 
 TensorFlow 2
 ************
@@ -134,10 +152,28 @@ This type of detector must be pointed towards the paths of the ``saved_model`` d
 Example on running the detector:
 
 .. code-block:: python
+    # load an image as a numpy array
+    import numpy as np
+    from PIL import Image
+    im = np.array(Image.open('image.jpg'))
 
+    # create the detector, pointing to the pre-trained model and the label map
     from dodo_detector.detection import TFObjectDetectorV2
-    detector = TFObjectDetectorV2('path/to/frozen/saved_model', 'path/to/labels.pbtxt')
-    marked_image, obj_dict = detector.from_image(im)
+    detector = TFObjectDetectorV2('path/to/frozen/graph.pb', 'path/to/labels.pbtxt')
+
+    # use the detector to find objects in an image
+    marked_image, objects = detector.from_image(im)
+    # list objects found. locations are given in tuples in the format (ymin, xmin, ymax, xmax)
+    objects
+    {'person': [(204, 456, 377, 534),
+    (182, 283, 370, 383),
+    (181, 222, 368, 282),
+    (184, 37, 379, 109),
+    (169, 0, 371, 66),
+    (199, 397, 371, 440),
+    (197, 108, 365, 191),
+    (184, 363, 377, 414),
+    (195, 144, 363, 195)]}
 
 Have fun!
 
