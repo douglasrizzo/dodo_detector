@@ -457,18 +457,16 @@ class TFObjectDetectorV2(TFObjectDetector):
         # detection_classes should be ints.
         output_dict["detection_classes"] = output_dict["detection_classes"].astype(np.int64)
 
-        # count how many scores are above the designated threshold
-        worthy_detections = sum(score >= self._confidence for score in output_dict["detection_scores"])
-
         detected_objects = {}
         # analyze all worthy detections
-        for x in range(worthy_detections):
+        for idx, score in output_dict["detection_scores"]:
+            if score < self._confidence: continue
 
             # capture the class of the detected object
-            class_name = self._label_map_dict[int(output_dict["detection_classes"][x])]
+            class_name = self._label_map_dict[int(output_dict["detection_classes"][idx])]
 
             # get the detection box around the object
-            box_objects = output_dict["detection_boxes"][x]
+            box_objects = output_dict["detection_boxes"][idx]
 
             # positions of the box are between 0 and 1, relative to the size of the image
             # we multiply them by the size of the image to get the box location in pixels
@@ -482,7 +480,7 @@ class TFObjectDetectorV2(TFObjectDetector):
 
             detected_objects[class_name].append({
                 "box": (ymin, xmin, ymax, xmax),
-                "confidence": output_dict["detection_scores"][x],
+                "confidence": output_dict["detection_scores"][idx],
             })
 
         # Handle models with masks:
@@ -589,19 +587,16 @@ class TFObjectDetectorV1(TFObjectDetector):
             feed_dict={image_tensor: image_np_expanded},
         )
 
-        # count how many scores are above the designated threshold
-        worthy_detections = sum(score >= self._confidence for score in scores[0])
-        # self._logger.debug('Found ' + str(worthy_detections) + ' objects')
-
         detected_objects = {}
         # analyze all worthy detections
-        for x in range(worthy_detections):
+        for idx, score in scores:
+            if score < self._confidence: continue
 
             # capture the class of the detected object
-            class_name = self._categories[int(classes[0][x])]
+            class_name = self._categories[int(classes[0][idx])]
 
             # get the detection box around the object
-            box_objects = boxes[0][x]
+            box_objects = boxes[0][idx]
 
             # positions of the box are between 0 and 1, relative to the size of the image
             # we multiply them by the size of the image to get the box location in pixels
@@ -613,7 +608,7 @@ class TFObjectDetectorV1(TFObjectDetector):
             if class_name not in detected_objects:
                 detected_objects[class_name] = []
 
-            detected_objects[class_name].append({"box": (ymin, xmin, ymax, xmax), "confidence": scores[0][x]})
+            detected_objects[class_name].append({"box": (ymin, xmin, ymax, xmax), "confidence": scores[0][idx]})
 
         # Visualization of the results of a detection.
         if self._mark_objects:
