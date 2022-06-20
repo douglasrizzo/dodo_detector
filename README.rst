@@ -119,6 +119,7 @@ This type of detector must be pointed towards the paths for the frozen inference
 Example on running the detector:
 
 .. code-block:: python
+    
     # load an image as a numpy array
     import numpy as np
     from PIL import Image
@@ -132,15 +133,18 @@ Example on running the detector:
     marked_image, objects = detector.from_image(im)
     # list objects found. locations are given in tuples in the format (ymin, xmin, ymax, xmax)
     objects
-    {'person': [(204, 456, 377, 534),
-    (182, 283, 370, 383),
-    (181, 222, 368, 282),
-    (184, 37, 379, 109),
-    (169, 0, 371, 66),
-    (199, 397, 371, 440),
-    (197, 108, 365, 191),
-    (184, 363, 377, 414),
-    (195, 144, 363, 195)]}
+    
+    {'person': [
+        {'box': (204, 456, 377, 534), 'confidence': 0.9989906},
+        {'box': (182, 283, 370, 383), 'confidence': 0.99848276},
+        {'box': (181, 222, 368, 282), 'confidence': 0.9979938},
+        {'box': (184, 37, 379, 109), 'confidence': 0.9938652},
+        {'box': (169, 0, 371, 66), 'confidence': 0.98873794},
+        {'box': (199, 397, 371, 440), 'confidence': 0.96926546},
+        {'box': (197, 108, 365, 191), 'confidence': 0.96739936},
+        {'box': (184, 363, 377, 414), 'confidence': 0.945458},
+        {'box': (195, 144, 363, 195), 'confidence': 0.92953676}
+    ]}
 
 TensorFlow 2
 ************
@@ -152,6 +156,7 @@ This type of detector must be pointed towards the paths of the ``saved_model`` d
 Example on running the detector:
 
 .. code-block:: python
+
     # load an image as a numpy array
     import numpy as np
     from PIL import Image
@@ -165,15 +170,18 @@ Example on running the detector:
     marked_image, objects = detector.from_image(im)
     # list objects found. locations are given in tuples in the format (ymin, xmin, ymax, xmax)
     objects
-    {'person': [(204, 456, 377, 534),
-    (182, 283, 370, 383),
-    (181, 222, 368, 282),
-    (184, 37, 379, 109),
-    (169, 0, 371, 66),
-    (199, 397, 371, 440),
-    (197, 108, 365, 191),
-    (184, 363, 377, 414),
-    (195, 144, 363, 195)]}
+    
+    {'person': [
+        {'box': (204, 456, 377, 534), 'confidence': 0.9989906},
+        {'box': (182, 283, 370, 383), 'confidence': 0.99848276},
+        {'box': (181, 222, 368, 282), 'confidence': 0.9979938},
+        {'box': (184, 37, 379, 109), 'confidence': 0.9938652},
+        {'box': (169, 0, 371, 66), 'confidence': 0.98873794},
+        {'box': (199, 397, 371, 440), 'confidence': 0.96926546},
+        {'box': (197, 108, 365, 191), 'confidence': 0.96739936},
+        {'box': (184, 363, 377, 414), 'confidence': 0.945458},
+        {'box': (195, 144, 363, 195), 'confidence': 0.92953676}
+    ]}
 
 Have fun!
 
