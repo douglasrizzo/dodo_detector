@@ -11,6 +11,7 @@ import tensorflow as tf
 from imutils.video import WebcamVideoStream
 from object_detection.utils import label_map_util
 from object_detection.utils import visualization_utils as vis_util
+from object_detection.utils import ops as utils_ops
 from tqdm import tqdm
 
 
@@ -459,7 +460,7 @@ class TFObjectDetectorV2(TFObjectDetector):
 
         detected_objects = {}
         # analyze all worthy detections
-        for idx, score in output_dict["detection_scores"]:
+        for idx, score in enumerate(output_dict["detection_scores"]):
             if score < self._confidence: continue
 
             # capture the class of the detected object
@@ -507,7 +508,7 @@ class TFObjectDetectorV2(TFObjectDetector):
                 use_normalized_coordinates=True,
                 line_thickness=8,
                 max_boxes_to_draw=200,
-                min_score_thresh=0.30,
+                min_score_thresh=self._confidence,
                 agnostic_mode=False,
             )
 
