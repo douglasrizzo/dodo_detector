@@ -539,7 +539,7 @@ class TFObjectDetectorV1(TFObjectDetector):
         # this is a workaround to guess the number of classes by the contents of the label map
         # it may not be perfect
         label_map_contents = open(path_to_labels, "r").read()
-        num_classes = label_map_contents.count("name:")
+        num_classes = label_map_contents.count("id:")
 
         categories = label_map_util.convert_label_map_to_categories(label_map, max_num_classes=num_classes, use_display_name=True)
         self._category_index = label_map_util.create_category_index(categories)
