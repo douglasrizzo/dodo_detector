@@ -5,7 +5,7 @@ This is a package that implements two types of object detection algorithms and p
 
 The second one uses any pre-trained convolutional network from the `TensorFlow Object Detection API <https://github.com/tensorflow/models/tree/master/research/object_detection>`__. Basically, `this tutorial <https://github.com/tensorflow/models/blob/master/research/object_detection/colab_tutorials/object_detection_tutorial.ipynb>`__.
 
-I've made an effort to keep the package compatible with both Python 2.7 and Python 3 (for ROS users) and, consequently, with TensorFlow 1 and 2, and the TensorFlow Object Detection APIs v1 and v2.
+I've made an effort to keep the package compatible with both Python 2.7 + TensorFlow 1 and Python 3 + TensorFlow 2.
 
 Why
 ---
@@ -21,8 +21,8 @@ For the keypoint-based object detector:
 
 For the TensorFlow-based object detectors:
 
-- if you plan to run this on ROS, or use Python 2.7, or TensorFlow 1: `TensorFlow Object Detection API v1 <https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf1.md>`__
-- if you plan on running this with TensorFlow 2: `TensorFlow Object Detection API v2 <https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2.md>`__
+- if you plan to use Python 2.7 and TensorFlow 1: `TensorFlow Object Detection API v1 <https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf1.md>`__
+- if you plan to use Python 3 and TensorFlow 2: `TensorFlow Object Detection API v2 <https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2.md>`__
 
 Follow their respective documentation pages to install them.
 
